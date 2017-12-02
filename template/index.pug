@@ -1,0 +1,10 @@
+extends layout
+
+block append head
+    meta(name="test")
+
+block content
+    ul
+        each article in articles
+            li
+                a(href=`/article/${article.meta.baseName}`)  #{article.meta.title}

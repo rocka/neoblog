@@ -1,0 +1,19 @@
+doctype html
+html
+    head
+        block head
+            meta(name="theme-color" content="#009688")
+            meta(http-equiv="X-UA-Compatible", content="ie=edge")
+            meta(name="viewport", content="width=device-width, initial-scale=1.0")
+            title Rocka's Blog | #{head.title}
+            link(rel="stylesheet", href="/style.css")
+            link(rel="stylesheet", href="/highlight.css")
+            script(src="/bundle.js")
+    body
+        block nav
+            include nav
+        block content
+        block side
+            include side
+        block footer
+            include footer

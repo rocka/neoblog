@@ -1,0 +1,285 @@
+/*   global adjustment   */
+
+html, body {
+    font-family: 'Noto Sans CJK SC', 'Noto Sans', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+/* * {
+    outline: none;
+    list-style: none;
+    -webkit-tap-highlight-color: transparent;
+} */
+
+a,
+a:link,
+a:visited {
+    text-decoration: none;
+    transition: color 0.4s;
+}
+
+a:hover {
+    color: darkorange;
+}
+
+/*  specific elements  */
+
+body {
+    background-color: #dddddd;
+}
+
+/* nav bar */
+
+nav {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 3rem;
+    width: 100%;
+    background-color: #009688;
+    opacity: 0.9;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+nav > .nav-list {
+    display: block;
+    height: 100%;
+    width: 1140px;
+    margin: auto;
+}
+
+nav > .nav-list > a {
+    display: inline-block;
+    line-height: 3rem;
+    color: white;
+    height: 100%;
+    padding: 0 1em;
+    transition: background-color 0.4s;
+}
+
+nav > .nav-list > a:hover {
+    background-color: rgba(255, 255, 255, 0.2)
+}
+
+/* header */
+
+.header {
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    height: 22rem;
+    overflow: hidden;
+    position: relative;
+    background-image: url('https://rocka.me/static/NASABahamas.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.header > .motto {
+    position: relative;
+    width: 1140px;
+    margin: 9rem calc(50% - 570px);
+    margin-bottom: 0;
+}
+
+.header > .motto > p {
+    font-weight: bold;
+    margin: 8px 0;
+    color: white;
+    text-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+}
+
+.header > .motto > .upper {
+    font-size: 2.2rem;
+}
+
+.header > .motto > .lower {
+    font-size: 1.4rem;
+}
+
+/* elements under header */
+
+/* the wrapper */
+.content {
+    position: relative;
+    width: 1140px;
+    margin: 1rem auto;
+}
+
+/* main content, against `aside` */
+.main {
+    width: 850px;
+    display: inline-block;
+    margin-right: 30px;
+}
+
+/* something looks like `material paper` */
+.paper {
+    margin: 0 0 1.5rem 0;
+    background-color: white;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+    padding: 0.6rem 1rem;
+    box-sizing: border-box;
+    border-radius: 2px;
+}
+
+.paper .title {
+    font-size: 1.5rem;
+    color: #009688;
+}
+
+.paper a.title:hover {
+    color: darkorange;
+}
+
+/* side bar */
+
+aside {
+    width: 260px;
+    display: inline-block;
+    right: 0;
+    top: 0;
+    vertical-align: top;
+}
+
+.side-box {
+    background-color: white;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.side-box .side-box-header {
+    background-color: #2CA499;
+    color: white;
+    padding: 0.6rem 1rem;
+    font-weight: 500;
+}
+
+.side-box-item {
+    color: #444444;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transition: background-color 0.4s;
+}
+
+.side-box-item:hover {
+    background-color: rgba(0, 0, 0, 0.1)
+}
+
+.side-box-item:last-child {
+    border-bottom: none;
+}
+
+.side-box-item a {
+    font-weight: 300;
+    color: #444444;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inherit;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    outline: none;
+}
+
+/* article elements wrapped in `paper` */
+
+.paper > article > pre {
+    margin: 1rem -1rem;
+    padding: 0.5rem 2rem;
+}
+
+.paper > article > p code {
+    font-size: 85%;
+    padding: 0.15rem;
+    background-color: #EEEEEE;
+}
+
+.paper > article > figure {
+    margin: 1rem -1rem;
+    text-align: center;
+}
+
+.paper > article > figure > img {
+    display: inline-block;
+    max-width: 100%;
+}
+
+.paper > article > figure > figcaption {
+    line-height: 1.6rem;
+    font-size: 0.9rem;
+    display: inline-block;
+    text-align: center;
+    color: grey;
+    border-bottom: 1px solid lightgrey;
+    padding: 0 1rem;
+}
+
+.paper > article > blockquote {
+    margin: 1rem -1rem;
+    padding: 1px 1rem;
+    background-color: #EEEEEE;
+    border-left: 8px solid lightgrey;
+}
+
+/* responsive */
+
+@media screen and (max-width: 1140px) {
+    .content {
+        width: 900px;
+    }
+    .main {
+        width: 610px;
+    }
+    .header > .motto {
+        margin: 9rem calc(50% - 450px);
+    }
+}
+
+@media screen and (max-width: 940px) {
+    .content,
+    aside {
+        width: 100%;
+        max-width: 610px;
+    }
+    .header > .motto {
+        margin: 9rem calc(50% - 305px);
+    }
+    aside {
+        width: 610px;
+        text-align-last: justify;
+    }
+    .side-box {
+        width: 290px;
+        display: inline-block;
+        text-align-last: initial;
+    }
+}
+
+@media screen and (max-width: 630px) {
+    .main,
+    aside {
+        width: 100%;
+    }
+    .header > .motto {
+        margin: 9rem 1rem;
+        width: 100%;
+    }
+    .main {
+        width: 100%;
+        margin: 0;
+    }
+    .paper,
+    .side-box {
+        margin-left: 1rem;
+        margin-right: 1rem;
+        width: calc(100% - 2rem);
+    }
+}

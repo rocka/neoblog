@@ -1,0 +1,7 @@
+aside
+    each group in side
+        div(class="side-box")
+            div(class="side-box-header")
+                span #{group.name}
+            each item in group.items
+                div(class="side-box-item")!= item

@@ -12,8 +12,10 @@ html
     body
         block nav
             include nav
-        block content
-        block side
-            include side
+        div(class="content")
+            div(class="main")
+                block content
+            block side
+                include side
         block footer
             include footer

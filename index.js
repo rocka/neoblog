@@ -17,7 +17,21 @@ const page = new lib.PageRenderer();
 const state = {
     /** @typedef {{baseName: string; title: string; date: string; tags: string[]}} ArticleMeta */
     /** @type {Array.<{src: string; html: string; meta: ArticleMeta}>} */
-    articles: []
+    articles: [],
+    nav: [
+        {
+            name: 'Rocka\'s Blog',
+            link: '/'
+        }
+    ],
+    side: [
+        {
+            name: 'Links',
+            items: [
+                '<a href="https://zeeko.1503.run" target="_blank">Zeeko</a>'
+            ]
+        }
+    ]
 };
 
 app.use((ctx, next) => {
@@ -43,15 +57,15 @@ list.on('change', files => {
 const coreRouter = new KoaRouter();
 coreRouter.get('/', (ctx) => {
     ctx.body = page.index({
-        articles: state.articles,
+        ...state,
         head: { title: 'Index' }
     });
 });
 coreRouter.get('/page/:page', (ctx) => {
     const offset = (ctx.params.page - 1) * 10;
     ctx.body = page.index({
+        ...state,
         articles: state.articles.slice(offset),
-        pageOffset: offset,
         head: { title: 'Index' }
     });
 });
@@ -59,12 +73,14 @@ coreRouter.get('/article/:name', (ctx) => {
     const a = state.articles.find(a => a.meta.baseName === ctx.params.name);
     if (a) {
         ctx.body = page.article({
+            ...state,
             content: a.html,
             head: { title: a.meta.title }
         });
     } else {
         ctx.response.status = 404;
         ctx.body = page.error({
+            ...state,
             content: '',
             head: { title: 404 }
         });

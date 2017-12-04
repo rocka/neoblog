@@ -3,5 +3,7 @@
 
 node_modules
 
+/example/package-lock.json
+
 # keep folders
 !.gitkeep

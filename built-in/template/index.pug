@@ -3,4 +3,4 @@ extends layout
 block content
     each article in articles
         div
-            a(class="title" href=`/article/${article.meta.baseName}`)  #{article.meta.title}
+            a(class="title" href=`/article/${article.file.base}`)  #{article.meta.title}

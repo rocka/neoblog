@@ -20,7 +20,8 @@ class ArticleList extends EventEmitter {
         this.basePath = path.resolve(basePath);
         if (!nameRegxp) throw new Error('[ArticleList] nameRegxp not specificed.');
         this.nameRegxp = nameRegxp;
-        /** @type {Array.<{path: string, base: string, ext: string}>} */
+        /** @typedef {{path: string, base: string, ext: string}} FileMeta */
+        /** @type {FileMeta[]} */
         this.files = [];
         fs.readdir(this.basePath, (err, files) => {
             this.files = this.resolveFiles(files);

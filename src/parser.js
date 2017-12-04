@@ -5,7 +5,6 @@ const util = require('util');
 
 const read = util.promisify(fs.readFile);
 
-// TODO: refine markdown parse into plugin
 const Marked = require('marked');
 const Highlight = require('highlight.js');
 
@@ -36,10 +35,14 @@ class ArticleParser {
         Marked.setOptions({ renderer: this.renderer });
     }
 
+    /** 
+     * @typedef {{path: string, base: string, ext: string}} FileMeta 
+     * @typedef {{title: string; date: string; tags: string[]}} ArticleMeta
+     */
     /**
      * Parse file to Article Object
      * 
-     * @param {{path: string, base: string, ext: string}} file 
+     * @param {FileMeta} file 
      * @returns {null}
      * @memberof ArticleParser
      */
@@ -48,19 +51,19 @@ class ArticleParser {
         try {
             const src = (await read(file.path)).toString();
             const result = metaRegxp.exec(src);
-            /** @type {{baseName: string; title: string; date: string; tags: string[]}} */
+            /** @type {ArticleMeta} */
             const meta = JSON.parse(result[1]);
-            meta.baseName = file.base;
+            // TODO: refine markdown parse into plugin            
             let html = await marked(src.replace(metaRegxp, ''));
             html = `<h1>${meta.title}</h1>${html}`;
-            return { src, html, meta };
+            return { src, html, meta, file };
         } catch (err) {
             return {
                 html: `<pre>Error when parsing:\n${file.path}\n${err.name}\n${err.message}\n${err.stack}</pre>`,
                 meta: {
-                    baseName: file.base,
+                    file,
                     tags: ['error'],
-                    title: `Error Parsing ${file.path}`,
+                    title: `Error Parsing ${file.base}.${file.ext}`,
                     date: new Date().toISOString()
                 }
             };

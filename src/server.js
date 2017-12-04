@@ -58,8 +58,12 @@ class BlogServer {
 
     __init() {
         this.state = {
-            /** @typedef {{baseName: string; title: string; date: string; tags: string[]}} ArticleMeta */
-            /** @type {Array.<{src: string; html: string; meta: ArticleMeta}>} */
+            /** 
+             * @typedef {{path: string, base: string, ext: string}} FileMeta 
+             * @typedef {{title: string; date: string; tags: string[]}} ArticleMeta
+             * @typedef {{src: string; html: string; file: FileMeta; meta: ArticleMeta}} Article
+             */
+            /** @type {Article[]} */
             articles: []
         };
         this.list = new ArticleList({
@@ -75,9 +79,9 @@ class BlogServer {
 
         // parse and watch articles
         this.list.on('change', files => {
-            files.forEach(async name => {
-                const old = this.state.articles.find(a => name.indexOf(a.meta.baseName) === 0);
-                const current = await this.parser.parse(name);
+            files.forEach(async file => {
+                const old = this.state.articles.find(a => file.base.indexOf(a.file.base) === 0);
+                const current = await this.parser.parse(file);
                 if (old) {
                     Object.assign(old, current);
                 } else {
@@ -104,7 +108,7 @@ class BlogServer {
             });
         });
         coreRouter.get('/article/:name', (ctx) => {
-            const a = this.state.articles.find(a => a.meta.baseName === ctx.params.name);
+            const a = this.state.articles.find(a => a.file.base === ctx.params.name);
             if (a) {
                 ctx.body = this.page.render('article', {
                     ...this.config.templateArgs,

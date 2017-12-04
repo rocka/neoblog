@@ -1,9 +1,9 @@
 {
-  "name": "newblog",
-  "version": "0.1.0",
-  "description": "Rocka's new blog",
+  "name": "neoblog",
+  "version": "0.0.1",
+  "description": "Lightweight bloging platform",
   "bin": {
-    "newblog": "bin/newblog.js"
+    "neoblog": "bin/neoblog.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,6 +12,10 @@
     "blog"
   ],
   "author": "rocka <i@rocka.me>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rocket1184/neoblog"
+  },
   "license": "MIT",
   "dependencies": {
     "highlight.js": "^9.12.0",

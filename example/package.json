@@ -1,14 +1,12 @@
 {
-  "name": "newblog-example",
+  "name": "neoblog-example",
   "version": "1.0.0",
-  "description": "Config example for newblog",
-  "main": "index.js",
+  "description": "Config example for neoblog",
   "scripts": {
-    "start": "newblog",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "neoblog"
   },
   "dependencies": {
-    "newblog": "../"
+    "neoblog": "../"
   },
   "author": "rocka",
   "license": "MIT"

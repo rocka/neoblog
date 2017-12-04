@@ -1,7 +1,3 @@
-put article file `xxxx.md` here.
-
-file should be in this format (exclouding '+++++'):
-+++++
 ```meta
 {
     "title": "Hello World",
@@ -19,4 +15,3 @@ async function get(url) {
     return await client.get(`${base}/url`);
 }
 ```
-+++++

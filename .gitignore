@@ -1,8 +1,7 @@
 /.vscode/*
+!.vscode/launch.json
 
 node_modules
-/plugins/*
-/userdata/article/*
 
 # keep folders
 !.gitkeep

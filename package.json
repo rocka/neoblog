@@ -2,9 +2,10 @@
   "name": "newblog",
   "version": "0.1.0",
   "description": "Rocka's new blog",
-  "main": "index.mjs",
+  "bin": {
+    "newblog": "bin/newblog.js"
+  },
   "scripts": {
-    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -15,6 +16,7 @@
   "dependencies": {
     "highlight.js": "^9.12.0",
     "koa": "^2.4.1",
+    "koa-mount": "^3.0.0",
     "koa-router": "^7.3.0",
     "koa-static": "^4.0.2",
     "marked": "^0.3.7",

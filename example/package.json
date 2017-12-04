@@ -1,0 +1,15 @@
+{
+  "name": "newblog-example",
+  "version": "1.0.0",
+  "description": "Config example for newblog",
+  "main": "index.js",
+  "scripts": {
+    "start": "newblog",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "newblog": "../"
+  },
+  "author": "rocka",
+  "license": "MIT"
+}

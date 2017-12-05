@@ -9,12 +9,11 @@ html
             else
                 title #{config.title}
             link(rel="stylesheet", href=assets('style.css'))
+            link(rel="stylesheet", href=assets('highlight.css'))
+            link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic")
             script(src=assets('script.js'))
     body
-        block nav
-            include nav
-        div(class="content")
-            div(class="main")
-                block content
-            block side
-                include side
+        block side
+            include side
+        div(class="main")
+            block content

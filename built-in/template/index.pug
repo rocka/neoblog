@@ -1,6 +1,7 @@
 extends layout
 
 block content
+    h1 #{indexHeading}
     each article in articles
         div
             a(class="title" href=`/article/${article.file.base}`)  #{article.meta.title}

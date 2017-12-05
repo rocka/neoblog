@@ -13,20 +13,21 @@ module.exports = {
     ],
     // arguments passed to template. can be anything but null.
     templateArgs: {
-        nav: [
-            {
-                name: 'Index',
-                link: '/'
-            }
-        ],
-        side: [
-            {
-                name: 'Info',
-                items: [
-                    `OS: ${process.platform} ${process.arch}`,
-                    `Node: ${process.version}`
+        indexHeading: 'NeoBlog\'s default template theme',
+        side: {
+            title: 'NeoBlog',
+            items: [
+                [
+                    {
+                        name: 'Index',
+                        link: '/'
+                    }
+                ],
+                [
+                    { text: `OS: ${process.platform} ${process.arch}` },
+                    { text: `Node: ${process.version}` }
                 ]
-            }
-        ]
+            ]
+        }
     }
 };

@@ -1,7 +1,11 @@
 aside
-    each group in side
-        div(class="side-box")
-            div(class="side-box-header")
-                span #{group.name}
-            each item in group.items
-                div(class="side-box-item")!= item
+    p #{side.title}
+    each group in side.items
+        ul
+            each item in group
+                li
+                    if item.link && item.name
+                        a(href=item.link) #{item.name}
+                    else if item.text
+                        span #{item.text}
+        div(class="line")

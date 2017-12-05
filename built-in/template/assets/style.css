@@ -1,3 +1,144 @@
+/**
+ * Written based on https://nodejs.org/docs/v9.2.0/api/assets/style.css
+ */
+
 html {
-    background-color: tan;
+    font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Tahoma, sans-serif;
+    color: #333;
+    background: #fff;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;    
+}
+
+aside {
+    width: 234px;
+    background-color: #333;
+    color: #ddd;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+aside > p:first-child {
+    margin: 1.25rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+aside > .line {
+    width: calc(100% - 1rem);
+    display: block;
+    padding-bottom: 1px;
+    margin: 0 .5rem;
+    background-color: #707070;
+}
+
+aside > .line:last-child {
+    display: none;
+}
+
+aside a {
+    transition: 0.3s color;
+    color: #ddd;
+}
+
+aside a:hover,
+aside a:visited,
+aside a:active {
+     color: white;
+}
+
+aside ul {
+    margin-left: 1.25rem;
+    padding: 0;
+}
+
+aside ul li {
+    margin-bottom: 0.75rem; 
+    list-style: none;
+}
+
+.main {
+    margin-left: 234px;
+    padding: 0 2rem;
+}
+
+.main a {
+    color: #43853d;
+    text-decoration: none;
+    border-radius: 2px;
+    padding: 1px 3px;
+}
+
+.main a:hover,
+.main a:focus {
+    color: #fff;
+    background-color: #43853d;
+    outline: none;
+}
+
+h1, h2, h3, h4, h5 {
+    position: relative;
+    padding-right: 40px;
+    margin: 0.5em 0;
+}
+
+h1 { font-size: 2rem }
+h2 { font-size: 1.75rem }
+h3 { font-size: 1.5rem }
+h4 { font-size: 1.25rem }
+h5 { font-size: 1rem }
+
+h1::after,
+h2::after,
+h3::after,
+h4::after,
+h5::after {
+    content: '#';
+    position: absolute;
+    right: 0;
+    color: #707070;
+}
+
+h1:hover::after,
+h2:hover::after,
+h3:hover::after,
+h4:hover::after,
+h5:hover::after {
+    color: #43853d;
+}
+
+.main article blockquote {
+    border-left: 2px solid #040404;
+}
+
+.main article blockquote p {
+    margin: 0;
+}
+
+.main article blockquote,
+.main article pre {
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.main article code {
+    color: #040404;
+    background-color: #f2f2f2;
+}
+
+.main article p code {
+    border-radius: 2px;
+    padding: 1px 3px;
+    line-height: 1.5rem;
 }

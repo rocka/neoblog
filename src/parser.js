@@ -37,7 +37,7 @@ class ArticleParser {
 
     /** 
      * @typedef {{path: string, base: string, ext: string}} FileMeta 
-     * @typedef {{title: string; date: string; tags: string[]}} ArticleMeta
+     * @typedef {{title: string; date: Date; tags: string[]}} ArticleMeta
      */
     /**
      * Parse file to Article Object
@@ -53,6 +53,7 @@ class ArticleParser {
             const result = metaRegxp.exec(src);
             /** @type {ArticleMeta} */
             const meta = JSON.parse(result[1]);
+            meta.date = new Date(meta.date);
             // TODO: refine markdown parse into plugin            
             let html = await marked(src.replace(metaRegxp, ''));
             html = `<h1>${meta.title}</h1>${html}`;

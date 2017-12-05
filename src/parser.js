@@ -35,6 +35,29 @@ class ArticleParser {
         Marked.setOptions({ renderer: this.renderer });
     }
 
+    /**
+     * get excerpt of HTML string
+     * 
+     * @static
+     * @param {string} html 
+     * @returns {string}
+     * @memberof ArticleParser
+     */
+    static excerptHTML(html) {
+        const imgRegxp = /<img[^>]+>/;
+        const imgTag = imgRegxp.exec(html);
+        const firstImgEnd = imgRegxp.lastIndex + imgTag ? imgTag[0].length : 0;
+        let firstFigEnd = html.indexOf('</figure>') + 9;
+        if (firstFigEnd < firstImgEnd) firstFigEnd = firstImgEnd;
+        let paraEnd = -1;
+        for (let i = 0; i < 5; i++) {
+            paraEnd = html.indexOf('</p>', paraEnd + 1) + 4;
+        }
+        let index = paraEnd;
+        if (firstFigEnd >= paraEnd) index = firstFigEnd;
+        return html.substr(0, index);
+    }
+
     /** 
      * @typedef {{path: string, base: string, ext: string}} FileMeta 
      * @typedef {{title: string; date: Date; tags: string[]}} ArticleMeta
@@ -54,19 +77,22 @@ class ArticleParser {
             /** @type {ArticleMeta} */
             const meta = JSON.parse(result[1]);
             meta.date = new Date(meta.date);
-            // TODO: refine markdown parse into plugin            
-            let html = await marked(src.replace(metaRegxp, ''));
-            html = `<h1>${meta.title}</h1>${html}`;
-            return { src, html, meta, file };
+            // TODO: refine markdown parse into plugin
+            const html = await marked(src.replace(metaRegxp, ''));
+            const excerpt = ArticleParser.excerptHTML(html);
+            return { file, meta, src, html, excerpt };
         } catch (err) {
+            const msg = `<pre>Error when parsing:\n${file.path}\n${err.name}\n${err.message}\n${err.stack}</pre>`
             return {
-                html: `<pre>Error when parsing:\n${file.path}\n${err.name}\n${err.message}\n${err.stack}</pre>`,
                 meta: {
-                    file,
                     tags: ['error'],
                     title: `Error Parsing ${file.base}.${file.ext}`,
-                    date: new Date().toISOString()
-                }
+                    date: new Date()
+                },
+                file,
+                src: msg,
+                html: msg,
+                excerpt: msg
             };
         }
     }

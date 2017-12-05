@@ -118,7 +118,7 @@ class BlogServer {
                 ctx.body = this.page.render('article', {
                     ...this.config.templateArgs,
                     ...this.state,
-                    content: a.html,
+                    article: a,
                     head: { title: a.meta.title }
                 });
             } else {

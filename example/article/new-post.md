@@ -19,6 +19,6 @@ int main()
 > 知识就是力量
 > 法国就是培根
 
-![必应美图 2016-10-04](https://rocka.me/static/NASABahamas.jpg)
+![Arch Linux](https://www.archlinux.org/static/logos/archlinux-logo-dark-scalable.518881f04ca9.svg)
 
-Please do `NOT` open this.
+Please use `console.error()` instead of `util.error()` .

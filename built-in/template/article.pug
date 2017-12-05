@@ -1,4 +1,6 @@
 extends layout
 
 block content
-    article!= content
+    article
+        h1 #{article.meta.title}
+        != article.html

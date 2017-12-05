@@ -60,7 +60,7 @@ class BlogServer {
         this.state = {
             /** 
              * @typedef {{path: string, base: string, ext: string}} FileMeta 
-             * @typedef {{title: string; date: string; tags: string[]}} ArticleMeta
+             * @typedef {{title: string; date: Date; tags: string[]}} ArticleMeta
              * @typedef {{src: string; html: string; file: FileMeta; meta: ArticleMeta}} Article
              */
             /** @type {Article[]} */
@@ -78,17 +78,22 @@ class BlogServer {
         this.app = new Koa();
 
         // parse and watch articles
-        this.list.on('change', files => {
-            files.forEach(async file => {
-                const old = this.state.articles.find(a => file.base.indexOf(a.file.base) === 0);
-                const current = await this.parser.parse(file);
-                if (old) {
-                    Object.assign(old, current);
-                } else {
-                    this.state.articles.push(current);
-                }
-                this.state.articles.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
-            });
+        this.list.on('create', async meta => {
+            const current = await this.parser.parse(meta);
+            this.state.articles.push(current);
+            this.state.articles.sort((a, b) => b.meta.date - a.meta.date);
+        });
+        this.list.on('remove', meta => {
+            const index = this.state.articles.findIndex(a => meta.base.indexOf(a.file.base) === 0);
+            this.state.articles.splice(index, 1);
+        });
+        this.list.on('change', async meta => {
+            const old = this.state.articles.find(a => meta.base.indexOf(a.file.base) === 0);
+            if (old) {
+                const current = await this.parser.parse(meta);
+                Object.assign(old, current);
+                this.state.articles.sort((a, b) => b.meta.date - a.meta.date);
+            }
         });
 
         // bind core routes

@@ -5,15 +5,6 @@ const path = require('path');
 const EventEmitter = require('events');
 
 class ArticleList extends EventEmitter {
-    static ResolveFileName(fullName = '') {
-        const regxp = /^([^.]+)\.([^.]+)$/;
-        const result = regxp.exec(fullName);
-        return {
-            base: result[1],
-            ext: result[2]
-        };
-    }
-
     constructor({ basePath, nameRegxp }) {
         super();
         if (!basePath) throw new Error('[ArticleList] basePath not specificed.');
@@ -23,25 +14,58 @@ class ArticleList extends EventEmitter {
         /** @typedef {{path: string, base: string, ext: string}} FileMeta */
         /** @type {FileMeta[]} */
         this.files = [];
-        fs.readdir(this.basePath, (err, files) => {
-            this.files = this.resolveFiles(files);
-            this.emit('change', this.files);
+        fs.readdir(this.basePath, (err, fileNames) => {
+            this.files = fileNames
+                .filter(name => name.match(this.nameRegxp))
+                .map(name => {
+                    const meta = this.resolveFileName(name);
+                    this.emit('create', meta);
+                    return meta;
+                });
         });
         fs.watch(this.basePath, (type, fileName) => {
-            const file = this.resolveFiles([fileName]);
-            this.emit('change', [file]);
+            /** @type {FileMeta[]} */
+            if (!fileName.match(this.nameRegxp)) return;
+            const file = this.resolveFileName(fileName);
+            switch (type) {
+                // create or delete
+                case 'rename':
+                    fs.exists(file.path, (exists) => {
+                        if (exists) {
+                            this.files.push(file);
+                            this.emit('create', file);
+                        } else {
+                            const i = this.files.findIndex(f => f.path === file.path);
+                            this.files.splice(i, 1);
+                            this.emit('remove', file);
+                        }
+                    });
+                    break;
+                // modify
+                case 'change':
+                    this.emit('change', file);
+                    break;
+                default:
+                    break;
+            }
         });
     }
 
-    resolveFiles(files) {
-        return files.filter(n => n.match(this.nameRegxp))
-            .map(n => {
-                const meta = ArticleList.ResolveFileName(n);
-                return {
-                    path: path.join(this.basePath, n),
-                    ...meta
-                };
-            });
+    /**
+     * parse file name into FileMeta
+     * 
+     * @param {string} [fileName=''] 
+     * @returns {FileMeta}
+     * @memberof ArticleList
+     */
+    resolveFileName(fileName = '') {
+        const regxp = /^(([^.]+\.?)*)\.([^.]+)?$/;
+        const result = regxp.exec(fileName);
+        return {
+            path: path.join(this.basePath, fileName),
+            base: result[1],
+            ext: result[3] || ''
+        };
     }
 }
 

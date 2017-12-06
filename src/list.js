@@ -24,14 +24,14 @@ class ArticleList extends EventEmitter {
                 });
         });
         fs.watch(this.basePath, (type, fileName) => {
-            /** @type {FileMeta[]} */
             if (!fileName.match(this.nameRegxp)) return;
+            /** @type {FileMeta} */
             const file = this.resolveFileName(fileName);
             switch (type) {
                 // create or delete
                 case 'rename':
-                    fs.exists(file.path, (exists) => {
-                        if (exists) {
+                    fs.access(file.path, fs.constants.F_OK, (err) => {
+                        if (!err) {
                             this.files.push(file);
                             this.emit('create', file);
                         } else {

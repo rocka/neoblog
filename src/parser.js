@@ -82,7 +82,7 @@ class ArticleParser {
             const excerpt = ArticleParser.excerptHTML(html);
             return { file, meta, src, html, excerpt };
         } catch (err) {
-            const msg = `<pre>Error when parsing:\n${file.path}\n${err.name}\n${err.message}\n${err.stack}</pre>`
+            const msg = `<pre>Error when parsing:\n${file.path}\n${err.name}\n${err.message}\n${err.stack}</pre>`;
             return {
                 meta: {
                     tags: ['error'],

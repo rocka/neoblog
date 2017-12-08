@@ -142,3 +142,12 @@ h5:hover::after {
     padding: 1px 3px;
     line-height: 1.5rem;
 }
+
+.main article figure {
+    text-align: center;
+}
+
+.main article figure img {
+    max-width: 800px;
+    margin: auto;
+}

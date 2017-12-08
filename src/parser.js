@@ -47,14 +47,17 @@ class ArticleParser {
         const imgRegxp = /<img[^>]+>/;
         const imgTag = imgRegxp.exec(html);
         const firstImgEnd = imgRegxp.lastIndex + imgTag ? imgTag[0].length : 0;
-        let firstFigEnd = html.indexOf('</figure>') + 9;
+        // we got index of charater '<'
+        let firstFigEnd = html.indexOf('</figure>');
+        // if found any, back 9
+        if (firstFigEnd > 0) firstFigEnd += 9;
         if (firstFigEnd < firstImgEnd) firstFigEnd = firstImgEnd;
         let paraEnd = -1;
         for (let i = 0; i < 5; i++) {
             paraEnd = html.indexOf('</p>', paraEnd + 1) + 4;
         }
         let index = paraEnd;
-        if (firstFigEnd >= paraEnd) index = firstFigEnd;
+        if (firstFigEnd <= paraEnd && firstFigEnd > 0) index = firstFigEnd;
         return html.substr(0, index);
     }
 

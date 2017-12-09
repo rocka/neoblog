@@ -45,18 +45,18 @@ class BlogServer {
     }
 
     constructor(configPath) {
-        let rawConf;
         this.configPath = configPath;
-        try {
-            rawConf = require(configPath);
-        } catch (err) {
-            throw new Error(`Error when reading config:\n${err.message}`);
-        }
-        this.config = BlogServer.ParseConfig(rawConf);
         this.__init();
     }
 
     __init() {
+        let rawConf;        
+        try {
+            rawConf = require(this.configPath);
+        } catch (err) {
+            throw new Error(`Error when reading config:\n${err.message}`);
+        }
+        this.config = BlogServer.ParseConfig(rawConf);
         this.state = {
             /** 
              * @typedef {{path: string, base: string, ext: string}} FileMeta 
@@ -139,11 +139,21 @@ class BlogServer {
         });
     }
 
-    reload() {
-        this.list.removeAllListeners();
+    stop() {
         return new Promise((resolve) => {
+            this.list.removeAllListeners();
             this._server.close(() => {
                 console.log('Server closed');
+                resolve();
+            });
+        });
+    }
+
+    reload() {
+        return new Promise((resolve) => {
+            // clear config cache
+            require.cache[this.configPath] = null;
+            this.stop().then(() => {
                 this.__init();
                 this.start().then(() => resolve());
             });

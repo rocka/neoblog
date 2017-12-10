@@ -3,8 +3,10 @@
 const Path = require('path');
 const ReadLine = require('readline');
 
-ReadLine.emitKeypressEvents(process.stdin);
-process.stdin.setRawMode(true);
+if (typeof process.stdin.setRawMode === 'function') {
+    ReadLine.emitKeypressEvents(process.stdin);
+    process.stdin.setRawMode(true);
+}
 
 const Server = require('./src/server');
 const configPath = Path.join(process.cwd(), 'config.js');

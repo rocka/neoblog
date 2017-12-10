@@ -38,6 +38,12 @@ class ArticleParser {
     /**
      * get excerpt of HTML string
      * 
+     * Strategy:
+     * first find 1st image or figure ('</figure>)
+     * then find the 5th (if not more than 5 paragraph, just the last) paragraph end ('</p>')
+     * figure ends before paragraph -> cut until </figure>
+     * 5th paragraph ends before figure -> cut until </p>
+     * 
      * @static
      * @param {string} html 
      * @returns {string}
@@ -47,14 +53,22 @@ class ArticleParser {
         const imgRegxp = /<img[^>]+>/;
         const imgTag = imgRegxp.exec(html);
         const firstImgEnd = imgRegxp.lastIndex + imgTag ? imgTag[0].length : 0;
-        // we got index of charater '<'
+        // got index of character '<'
         let firstFigEnd = html.indexOf('</figure>');
-        // if found any, back 9
+        // if found any, forward 9 to character '>'
         if (firstFigEnd > 0) firstFigEnd += 9;
         if (firstFigEnd < firstImgEnd) firstFigEnd = firstImgEnd;
         let paraEnd = -1;
         for (let i = 0; i < 5; i++) {
-            paraEnd = html.indexOf('</p>', paraEnd + 1) + 4;
+            // find index of character '<'
+            const newEnd = html.indexOf('</p>', paraEnd + 1);
+            if (newEnd >= 0) {
+                // if found any, forward 4 for character '>'
+                paraEnd = newEnd + 4;
+            } else {
+                // not found any, no '</p>' below, so break
+                break;
+            }
         }
         let index = paraEnd;
         if (firstFigEnd <= paraEnd && firstFigEnd > 0) index = firstFigEnd;

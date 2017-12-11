@@ -151,3 +151,8 @@ h5:hover::after {
     max-width: 800px;
     margin: auto;
 }
+
+.main article i.material-icons {
+    font-size: 1.1rem;
+    vertical-align: sub;
+}

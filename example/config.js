@@ -5,11 +5,14 @@ module.exports = {
     port: 2233,
     // path to article directory. default to `./article` .
     articleDir: './article',
+    // regular expression to match article file names. default to `/\.md$/`
+    articleExt: /\.(md)|(markdown)|(txt)$/,
     // path to template directory. set `null` to use built-in template.
     templateDir: null,
     // plugins to load. At least an empty array.
     plugins: [
-        require('./plugin/test-api-plugin')
+        require('./plugin/test-api-plugin'),
+        require('./plugin/parse-txt-article')
     ],
     // arguments passed to template. can be anything but null.
     templateArgs: {

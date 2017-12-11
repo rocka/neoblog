@@ -1,0 +1,11 @@
+```meta
+{
+    "title": "Test txt Article",
+    "date": "2017-12-11T11:34:03.236Z",
+    "tags": [ "hello-world", "post" ]
+}
+```
+
+Just plain text file.
+
+Text will be wrapped in <pre> tag to keep the format.

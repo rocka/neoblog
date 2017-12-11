@@ -10,5 +10,9 @@ router.get('/api/test', (ctx) => {
 });
 
 module.exports = {
+    name: 'test-api-plugin',
+    version: '0.1.0',
+    description: 'neoblog plugin example for adding new routes to koa app.',
+    author: 'rocka <i@rocka.me>',
     routes: router.routes()
 };

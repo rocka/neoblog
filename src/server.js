@@ -11,6 +11,12 @@ const ArticleList = require('./list');
 const ArticleParser = require('./parser');
 const PageRenderer = require('./page');
 
+/** 
+ * @typedef {{path: string, base: string, ext: string}} FileMeta 
+ * @typedef {{title: string; date: Date; tags: string[]}} ArticleMeta
+ * @typedef {{src: string; html: string; file: FileMeta; meta: ArticleMeta}} Article
+ */
+
 class BlogServer {
     static ParseConfig(input) {
         if (!input) throw new Error('config cannot be null!');
@@ -19,6 +25,7 @@ class BlogServer {
             port: 2233,
             plugins: [],
             articleDir: './article',
+            articleExt: /\.md$/,
             templateDir: path.join(__dirname, '../built-in/template'),
             templateArgs: {}
         };
@@ -28,13 +35,15 @@ class BlogServer {
         else config.port = input.port;
         if (!input.articleDir) console.log('`config.articleDir` not specificed. using default `./article`.');
         else config.articleDir = input.articleDir;
+        if (!input.articleExt) console.log('`config.articleExt` not specificed. using default `/\\.md$/`.');
+        else config.articleExt = input.articleExt;
         if (!input.templateDir) console.log('`config.templateDir` not specificed. using defalut template.');
         else config.templateDir = input.templateDir;
         if (!input.plugins || input.plugins.length === 0) {
-            console.log('No plugins loaded.');
+            console.log('No plugins found.');
         } else {
             config.plugins = input.plugins;
-            console.log(`${config.plugins.length} plugin(s) loaded.`);
+            console.log(`${config.plugins.length} plugin(s) found.`);
         }
         if (!input.templateArgs || Reflect.ownKeys(input.templateArgs).length === 0) {
             console.log('No arguments applied to template.');
@@ -46,11 +55,12 @@ class BlogServer {
 
     constructor(configPath) {
         this.configPath = configPath;
+        this.builtInPluginPath = path.resolve(__dirname, '../built-in/plugin');        
         this.__init();
     }
 
     __init() {
-        let rawConf;        
+        let rawConf;
         try {
             rawConf = require(this.configPath);
         } catch (err) {
@@ -58,17 +68,12 @@ class BlogServer {
         }
         this.config = BlogServer.ParseConfig(rawConf);
         this.state = {
-            /** 
-             * @typedef {{path: string, base: string, ext: string}} FileMeta 
-             * @typedef {{title: string; date: Date; tags: string[]}} ArticleMeta
-             * @typedef {{src: string; html: string; file: FileMeta; meta: ArticleMeta}} Article
-             */
             /** @type {Article[]} */
             articles: []
         };
         this.list = new ArticleList({
             basePath: this.config.articleDir,
-            nameRegxp: /\.md$/
+            nameRegxp: this.config.articleExt
         });
         this.parser = new ArticleParser();
         this.page = new PageRenderer({
@@ -127,7 +132,20 @@ class BlogServer {
         });
         this.app.use(coreRouter.routes());
         this.app.use(KoaMount('/assets', KoaStatic(path.join(this.config.templateDir, 'assets'))));
-        this.config.plugins.forEach(plugin => this.app.use(plugin.routes));
+        const builtInPlugins = require(this.builtInPluginPath);
+        builtInPlugins.forEach(this.installPlugin.bind(this));
+        this.config.plugins.forEach(this.installPlugin.bind(this));
+    }
+
+    installPlugin(plugin) {
+        try {
+            if (plugin.routes) this.app.use(plugin.routes);
+            if (typeof plugin.install === 'function') plugin.install(this);
+            return true;
+        } catch (err) {
+            console.error(`[BlogServer] Error installing plugin ${plugin.name}:\n${err.name}\n${err.message}\n${err.stack}`);
+            return false;
+        }
     }
 
     start() {
@@ -153,6 +171,8 @@ class BlogServer {
         return new Promise((resolve) => {
             // clear config cache
             require.cache[this.configPath] = null;
+            // clear built-in plugin cache
+            require.cache[this.builtInPluginPath] = null;
             this.stop().then(() => {
                 this.__init();
                 this.start().then(() => resolve());

@@ -5,8 +5,10 @@ module.exports = {
     port: 2233,
     // path to article directory. default to `./article` .
     articleDir: './article',
-    // regular expression to match article file names. default to `/\.md$/`
+    // regular expression to match article file names. default to `/\.md$/`.
     articleExt: /\.(md)|(markdown)|(txt)$/,
+    // number of articles per page. default to `10`.
+    articlesPerPage: 10,
     // path to template directory. set `null` to use built-in template.
     templateDir: null,
     // plugins to load. At least an empty array.

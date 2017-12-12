@@ -4,7 +4,7 @@ const path = require('path');
 
 const Koa = require('koa');
 const KoaRouter = require('koa-router');
-const KoaStatic = require('koa-static');
+const KoaStatic = require('koa-static-cache');
 const KoaMount = require('koa-mount');
 
 const ArticleList = require('./list');
@@ -118,7 +118,7 @@ class BlogServer {
                 pagination: {
                     current: page,
                     prev: page > 1 ? page - 1 : false,
-                    next:  page === total ? false : page + 1,
+                    next: page === total ? false : page + 1,
                     total: total,
                     size: this.config.articlesPerPage
                 }
@@ -158,7 +158,14 @@ class BlogServer {
             }
         });
         this.app.use(coreRouter.routes());
-        this.app.use(KoaMount('/assets', KoaStatic(path.join(this.config.templateDir, 'assets'))));
+        this.app.use(KoaMount(
+            '/assets',
+            KoaStatic(path.join(this.config.templateDir, 'assets'), {
+                maxAge: 365 * 24 * 60 * 60,
+                gzip: true,
+                usePrecompiledGzip: true
+            })
+        ));
         const builtInPlugins = require(this.builtInPluginPath);
         builtInPlugins.forEach(this.installPlugin.bind(this));
         this.config.plugins.forEach(this.installPlugin.bind(this));

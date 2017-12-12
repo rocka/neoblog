@@ -23,7 +23,7 @@
     "koa": "^2.4.1",
     "koa-mount": "^3.0.0",
     "koa-router": "^7.3.0",
-    "koa-static": "^4.0.2",
+    "koa-static-cache": "^5.1.1",
     "marked": "^0.3.7",
     "node-fetch": "^1.7.3",
     "pug": "^2.0.0-rc.4"

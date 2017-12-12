@@ -118,6 +118,10 @@ h5:hover::after {
     color: #43853d;
 }
 
+.main .pagination {
+    margin-bottom: 2rem;
+}
+
 .main blockquote {
     border-left: 2px solid #040404;
 }

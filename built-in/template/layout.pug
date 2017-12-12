@@ -4,8 +4,8 @@ html
         block head
             meta(http-equiv="X-UA-Compatible", content="ie=edge")
             meta(name="viewport", content="width=device-width, initial-scale=1.0")
-            if head && head.title
-                title #{config.title} | #{head.title}
+            if article && article.title
+                title #{config.title} | #{article.title}
             else
                 title #{config.title}
             link(rel="stylesheet", href=assets('style.css'))

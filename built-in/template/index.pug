@@ -7,3 +7,12 @@ block content
             h1
                 a(class="title" href=`/article/${article.file.base}`)  #{article.meta.title}
             != article.excerpt
+            if article.more
+                p(class="more")
+                    a(href=`/article/${article.file.base}`) READ MORE ->
+    if pagination
+        p(class="pagination")
+            if pagination.prev
+                a(class="prev" href=`/page/${pagination.prev}`) <- PREV
+            if pagination.next
+                a(class="next" href=`/page/${pagination.next}`) NEXT ->

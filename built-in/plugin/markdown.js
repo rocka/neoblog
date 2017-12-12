@@ -7,10 +7,13 @@ const EscapeHTML = require('escape-html');
 const renderer = new Marked.Renderer();
 
 renderer.listitem = function (text) {
-    const html = text
-        .replace(/^\s*\[x\]\s*/g, '<i class="material-icons" aria-hidden="true">check_box</i>')
-        .replace(/^\s*\[ \]\s*/g, '<i class="material-icons" aria-hidden="true">check_box_outline_blank</i>');
-    return `<li>${html}</li>`;
+    if (text.match(/^\s*\[x| \]/)) {
+        const html = text
+            .replace(/^\s*\[x\]\s*/, '<input type="checkbox" aria-hidden="true" disabled checked>')
+            .replace(/^\s*\[ \]\s*/, '<input type="checkbox" aria-hidden="true" disabled>');
+        return `<li class="task-item">${html}</li>`;
+    }
+    return Marked.Renderer.prototype.listitem(text);
 };
 
 renderer.image = function (href, title, text) {

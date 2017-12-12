@@ -14,7 +14,7 @@ const PageRenderer = require('./page');
 /** 
  * @typedef {{path: string, base: string, ext: string}} FileMeta 
  * @typedef {{title: string; date: Date; tags: string[]}} ArticleMeta
- * @typedef {{src: string; html: string; file: FileMeta; meta: ArticleMeta}} Article
+ * @typedef {{src: string; html: string; file: FileMeta; meta: ArticleMeta, more: boolean}} Article
  */
 
 class BlogServer {
@@ -26,6 +26,7 @@ class BlogServer {
             plugins: [],
             articleDir: './article',
             articleExt: /\.md$/,
+            articlesPerPage: 10,
             templateDir: path.join(__dirname, '../built-in/template'),
             templateArgs: {}
         };
@@ -37,6 +38,8 @@ class BlogServer {
         else config.articleDir = input.articleDir;
         if (!input.articleExt) console.log('`config.articleExt` not specificed. using default `/\\.md$/`.');
         else config.articleExt = input.articleExt;
+        if (!input.articlesPerPage) console.log('`config.articlesPerPage` not specificed. using default `10`.');
+        else config.articlesPerPage = input.articlesPerPage;
         if (!input.templateDir) console.log('`config.templateDir` not specificed. using defalut template.');
         else config.templateDir = input.templateDir;
         if (!input.plugins || input.plugins.length === 0) {
@@ -55,7 +58,7 @@ class BlogServer {
 
     constructor(configPath) {
         this.configPath = configPath;
-        this.builtInPluginPath = path.resolve(__dirname, '../built-in/plugin');        
+        this.builtInPluginPath = path.resolve(__dirname, '../built-in/plugin');
         this.__init();
     }
 
@@ -101,30 +104,54 @@ class BlogServer {
             }
         });
 
+        /**
+         * generate pug locals for `/page/:page`
+         * 
+         * @param {number} page page number
+         */
+        const getPageLocals = (page) => {
+            const offset = (page - 1) * this.config.articlesPerPage;
+            const total = Math.round(this.state.articles.length / this.config.articlesPerPage + 0.5);
+            return {
+                ...this.config.templateArgs,
+                articles: this.state.articles.slice(offset, offset + this.config.articlesPerPage),
+                pagination: {
+                    current: page,
+                    prev: page > 1 ? page - 1 : false,
+                    next:  page === total ? false : page + 1,
+                    total: total,
+                    size: this.config.articlesPerPage
+                }
+            };
+        };
+
         // bind core routes
         const coreRouter = new KoaRouter();
         coreRouter.get('/', (ctx) => {
-            ctx.body = this.page.render('index', {
-                ...this.config.templateArgs,
-                ...this.state
-            });
+            ctx.body = this.page.render('index', getPageLocals(1));
         });
         coreRouter.get('/page/:page', (ctx) => {
-            const offset = (ctx.params.page - 1) * 10;
-            ctx.body = this.page.render('index', {
-                ...this.config.templateArgs,
-                ...this.state,
-                articles: this.state.articles.slice(offset)
-            });
+            const page = Number(ctx.params.page);
+            if (page <= 0) {
+                ctx.response.status = 404;
+            } else if (page === 1) {
+                ctx.response.status = 301;
+                ctx.response.set('Location', '/');
+            } else {
+                const offset = (page - 1) * this.config.articlesPerPage;
+                if (offset >= this.state.articles.length) {
+                    ctx.response.status = 404;
+                } else {
+                    ctx.body = this.page.render('index', getPageLocals(page));
+                }
+            }
         });
         coreRouter.get('/article/:name', (ctx) => {
             const a = this.state.articles.find(a => a.file.base === ctx.params.name);
             if (a) {
                 ctx.body = this.page.render('article', {
                     ...this.config.templateArgs,
-                    ...this.state,
                     article: a,
-                    head: { title: a.meta.title }
                 });
             } else {
                 ctx.response.status = 404;

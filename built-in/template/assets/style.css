@@ -118,41 +118,72 @@ h5:hover::after {
     color: #43853d;
 }
 
-.main article blockquote {
+.main blockquote {
     border-left: 2px solid #040404;
 }
 
-.main article blockquote p {
+.main blockquote p {
     margin: 0;
 }
 
-.main article blockquote,
-.main article pre {
+.main blockquote,
+.main pre {
     padding: 1rem;
     margin: 1rem;
 }
 
-.main article code {
+.main code {
     color: #040404;
     background-color: #f2f2f2;
 }
 
-.main article p code {
+.main p code {
     border-radius: 2px;
     padding: 1px 3px;
     line-height: 1.5rem;
 }
 
-.main article figure {
+.main figure {
     text-align: center;
 }
 
-.main article figure img {
+.main figure img {
     max-width: 800px;
     margin: auto;
 }
 
-.main article i.material-icons {
-    font-size: 1.1rem;
-    vertical-align: sub;
+.main ul,
+.main ol {
+    padding: 0;
+    margin-left: 1.2rem;
+}
+
+.main ul li,
+.main ol li {
+    padding: 0.2rem 0;
+}
+
+.main ul li.task-item {
+    list-style-type: none;
+    margin-left: -1.2rem;
+}
+
+.main table {
+    margin: 1rem;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+    border-collapse: collapse;
+}
+
+.main table thead {
+    background-color: #f2f2f2;
+}
+
+.main table tr th,
+.main table tr td {
+    padding: 0.4em 1em;
+}
+
+.main table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid #ddd;
 }

@@ -78,7 +78,7 @@ class ArticleParser extends EventEmitter {
      * Parse file to Article Object
      * 
      * @param {FileMeta} file 
-     * @returns {null}
+     * @returns {Article}
      * @memberof ArticleParser
      */
     async parse(file) {
@@ -89,9 +89,10 @@ class ArticleParser extends EventEmitter {
             /** @type {ArticleMeta} */
             const meta = JSON.parse(result[1]);
             meta.date = new Date(meta.date);
-            const html = await this.parseContent(file, src.replace(metaRegxp, ''));
+            const html = (await this.parseContent(file, src.replace(metaRegxp, ''))).trim();
             const excerpt = ArticleParser.excerptHTML(html);
-            return { file, meta, src, html, excerpt };
+            const more = excerpt.length < html.length;
+            return { file, meta, src, html, excerpt, more };
         } catch (err) {
             const msg = `<pre>Error when parsing:\n${file.path}\n${err.name}\n${err.message}\n${err.stack}</pre>`;
             return {
@@ -103,7 +104,8 @@ class ArticleParser extends EventEmitter {
                 file,
                 src: msg,
                 html: msg,
-                excerpt: msg
+                excerpt: msg,
+                more: false
             };
         }
     }

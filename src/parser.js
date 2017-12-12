@@ -17,24 +17,6 @@ class ArticleParser extends EventEmitter {
     }
 
     /**
-     * try convert article src to html asynchronously
-     * 
-     * @param {FileMeta} file file ext name
-     * @param {string} src article content string
-     */
-    tryParse(file, src) {
-        return new Promise((resolve) => {
-            const eventName = file.ext;
-            if (this.listenerCount(eventName) > 0) {
-                this.emit(eventName, src, resolve);
-            } else {
-                console.log(`[ArticleParser] no parser accepts file ext ${file.ext}. Using raw output.\nFile path: ${file.path}`);
-                resolve(src);
-            }
-        });
-    }
-
-    /**
      * get excerpt of HTML string
      * 
      * Strategy:
@@ -75,6 +57,24 @@ class ArticleParser extends EventEmitter {
     }
 
     /**
+     * convert article src to html asynchronously
+     * 
+     * @param {FileMeta} file file ext name
+     * @param {string} src article content string
+     */
+    parseContent(file, src) {
+        return new Promise((resolve) => {
+            const eventName = file.ext;
+            if (this.listenerCount(eventName) > 0) {
+                this.emit(eventName, src, resolve);
+            } else {
+                console.log(`[ArticleParser] no parser accepts file ext ${file.ext}. Using raw output.\nFile path: ${file.path}`);
+                resolve(src);
+            }
+        });
+    }
+
+    /**
      * Parse file to Article Object
      * 
      * @param {FileMeta} file 
@@ -89,7 +89,7 @@ class ArticleParser extends EventEmitter {
             /** @type {ArticleMeta} */
             const meta = JSON.parse(result[1]);
             meta.date = new Date(meta.date);
-            const html = await this.tryParse(file, src.replace(metaRegxp, ''));
+            const html = await this.parseContent(file, src.replace(metaRegxp, ''));
             const excerpt = ArticleParser.excerptHTML(html);
             return { file, meta, src, html, excerpt };
         } catch (err) {

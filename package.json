@@ -6,7 +6,7 @@
     "neoblog": "bin/neoblog.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cd example && node ../index.js"
   },
   "keywords": [
     "blog"
@@ -25,7 +25,6 @@
     "koa-router": "^7.3.0",
     "koa-static-cache": "^5.1.1",
     "marked": "^0.3.7",
-    "node-fetch": "^1.7.3",
     "pug": "^2.0.0-rc.4"
   }
 }

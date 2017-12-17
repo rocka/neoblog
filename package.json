@@ -8,6 +8,9 @@
   "scripts": {
     "start": "cd example && node ../index.js"
   },
+  "engines": {
+    "node": ">=7.6.0"
+  },
   "keywords": [
     "blog"
   ],

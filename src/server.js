@@ -84,6 +84,8 @@ class BlogServer {
             baseLocals: { config: { title: this.config.title } }
         });
         this.app = new Koa();
+        // reference `ctx.app.server` to `BlogServer` instance
+        this.app.server = this;
 
         // parse and watch articles
         this.list.on('create', async meta => {

@@ -1,3 +1,4 @@
 module.exports = [
-    require('./markdown')
+    require('./markdown'),
+    require('./preview')
 ];

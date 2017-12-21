@@ -18,9 +18,17 @@ class PageRenderer extends EventEmitter {
         this.renderCache = new Map();
     }
 
-    render(name, locals) {
-        const fullPath = path.join(this.basePath, `${name}.pug`);
-        return Pug.renderFile(fullPath, {
+    /**
+     * render template file to HTML string with locals
+     * 
+     * @param {string} name template file name or absolute path
+     * @param {any} locals pug template locals
+     */
+    render(name, locals = {}) {
+        if (!path.isAbsolute(name)) {
+            name = path.join(this.basePath, name);
+        }
+        return Pug.renderFile(name, {
             cache: true,
             ...this.baseLocals,
             ...locals

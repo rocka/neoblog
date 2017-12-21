@@ -130,7 +130,7 @@ class BlogServer {
         // bind core routes
         const coreRouter = new KoaRouter();
         coreRouter.get('/', (ctx) => {
-            ctx.body = this.page.render('index', getPageLocals(1));
+            ctx.body = this.page.render('index.pug', getPageLocals(1));
         });
         coreRouter.get('/page/:page', (ctx) => {
             const page = Number(ctx.params.page);
@@ -144,14 +144,14 @@ class BlogServer {
                 if (offset >= this.state.articles.length) {
                     ctx.response.status = 404;
                 } else {
-                    ctx.body = this.page.render('index', getPageLocals(page));
+                    ctx.body = this.page.render('index.pug', getPageLocals(page));
                 }
             }
         });
         coreRouter.get('/article/:name', (ctx) => {
             const a = this.state.articles.find(a => a.file.base === ctx.params.name);
             if (a) {
-                ctx.body = this.page.render('article', {
+                ctx.body = this.page.render('article.pug', {
                     ...this.config.templateArgs,
                     article: a,
                 });

@@ -19,12 +19,12 @@ class PageRenderer extends EventEmitter {
     }
 
     render(name, locals) {
-        let cached = this.renderCache.get(name);
-        if (!cached) {
-            cached = Pug.compileFile(path.join(this.basePath, `${name}.pug`));
-            this.renderCache.set(name, cached);
-        }
-        return cached({ ...this.baseLocals, ...locals });
+        const fullPath = path.join(this.basePath, `${name}.pug`);
+        return Pug.renderFile(fullPath, {
+            cache: true,
+            ...this.baseLocals,
+            ...locals
+        });
     }
 }
 

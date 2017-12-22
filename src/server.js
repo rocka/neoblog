@@ -175,11 +175,15 @@ class BlogServer {
 
     installPlugin(plugin) {
         try {
-            if (plugin.routes) this.app.use(plugin.routes);
+            if (Array.isArray(plugin.routes)) {
+                plugin.routes.forEach(r => this.app.use(r));
+            } else if (plugin.routes) {
+                this.app.use(plugin.routes);
+            }
             if (typeof plugin.install === 'function') plugin.install(this);
             return true;
         } catch (err) {
-            console.error(`[BlogServer] Error installing plugin ${plugin.name}:\n${err.name}\n${err.message}\n${err.stack}`);
+            console.error(`[BlogServer] Error installing plugin ${plugin.name}:\n${err.stack}`);
             return false;
         }
     }

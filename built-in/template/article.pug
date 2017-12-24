@@ -3,4 +3,5 @@ extends layout
 block content
     article
         h1 #{article.meta.title}
+        p(class="meta") #{formatDate(article.meta.date)}
         != article.html

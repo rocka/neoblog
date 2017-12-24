@@ -6,6 +6,7 @@ block content
         article
             h1
                 a(class="title" href=`/article/${article.file.base}`)  #{article.meta.title}
+            p(class="meta") #{formatDate(article.meta.date)}
             != article.excerpt
             if article.more
                 p(class="more")

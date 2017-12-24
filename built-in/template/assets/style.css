@@ -118,6 +118,11 @@ h5:hover::after {
     color: #43853d;
 }
 
+.main article p.meta {
+    color: grey;
+    font-size: 0.9rem;
+}
+
 .main .pagination {
     margin-bottom: 2rem;
 }

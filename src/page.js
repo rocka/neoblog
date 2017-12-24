@@ -13,7 +13,20 @@ class PageRenderer extends EventEmitter {
         if (!baseLocals) throw new Error('[PageRenderer] baseLocals not specificed.');
         this.baseLocals = {
             ...baseLocals,
-            assets: name => `/assets/${name}`
+            assets: name => `/assets/${name}`,
+            formatDate(dt) {
+                if (!(dt instanceof Date)) {
+                    dt = new Date(dt);
+                }
+                return dt.toLocaleDateString('zh', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    hour12: false,
+                    minute: '2-digit'
+                });
+            },
         };
         this.renderCache = new Map();
     }

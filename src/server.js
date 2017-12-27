@@ -96,15 +96,25 @@ class BlogServer {
         // reference `ctx.app.server` to `BlogServer` instance
         this.app.server = this;
 
+        // path should not end with '/' expect index
+        this.app.use(async (ctx, next) => {
+            if (ctx.path.endsWith('/') && ctx.path !== '/') {
+                ctx.status = 301;
+                return ctx.redirect(ctx.path.substr(0, ctx.path.length - 1));
+            }
+            await next();
+        });
+
+        // push (article) element into array and sort by date
+        const pushAndSort = (element, array) => {
+            array.push(element);
+            array.sort((a, b) => b.meta.date - a.meta.date);
+        };
+
         // add article to article list / tag list
         const handleArticleChange = article => {
-            this.state.articles.push(article);
-            this.state.articles.sort((a, b) => b.meta.date - a.meta.date);
-            article.meta.tags.forEach(tag => {
-                this.state.tags[tag].length;
-                this.state.tags[tag].push(article);
-                this.state.tags[tag].sort((a, b) => b.meta.date - a.meta.date);
-            });
+            pushAndSort(article, this.state.articles);
+            article.meta.tags.forEach(tag => pushAndSort(article, this.state.tags[tag]));
         };
 
         // delete article matches given meta from Article[]
@@ -131,6 +141,21 @@ class BlogServer {
             }
         });
 
+        // middleware for parsing pagination like `/page/:page`
+        const PaginationMiddleWare = async (ctx, next) => {
+            const page = Number(ctx.params.page);
+            if (page <= 0) {
+                ctx.response.status = 404;
+            } else if (page === 1) {
+                // redirect `/page/1` to `/`
+                ctx.status = 301;
+                ctx.redirect(path.join(ctx.path, '../..'));
+            } else {
+                ctx.state.page = page;
+                await next();
+            }
+        };
+
         /**
          * generate pug locals for `/page/:page`
          * 
@@ -139,13 +164,14 @@ class BlogServer {
          */
         const getPageLocals = (page, tag) => {
             const offset = (page - 1) * this.config.articlesPerPage;
-            const total = Math.round(this.state.articles.length / this.config.articlesPerPage + 0.5);
             const articles = tag ? this.state.tags[tag] : this.state.articles;
+            const total = Math.round(articles.length / this.config.articlesPerPage + 0.5);
             return {
                 ...this.config.templateArgs,
                 articles: articles.slice(offset, offset + this.config.articlesPerPage),
                 pagination: {
                     current: page,
+                    prefix: tag ? `/tag/${tag}` : '',
                     prev: page > 1 ? page - 1 : false,
                     next: page === total ? false : page + 1,
                     total: total,
@@ -154,29 +180,34 @@ class BlogServer {
             };
         };
 
-        // bind core routes
+        // bind core routes, including 
+        // `/` `/page/:page`
+        // `/tag/:tag` `/tag/:tag/page/:page`
+        // `/article/:name`
         const coreRouter = new KoaRouter();
         coreRouter.get('/', (ctx) => {
             ctx.body = this.page.render('index.pug', getPageLocals(1));
         });
-        coreRouter.get('/page/:page', (ctx) => {
-            const page = Number(ctx.params.page);
-            if (page <= 0) {
-                ctx.response.status = 404;
-            } else if (page === 1) {
-                ctx.response.status = 301;
-                ctx.response.set('Location', '/');
-            } else {
-                const offset = (page - 1) * this.config.articlesPerPage;
-                if (offset >= this.state.articles.length) {
-                    ctx.response.status = 404;
-                } else {
-                    ctx.body = this.page.render('index.pug', getPageLocals(page));
-                }
+        coreRouter.get('/page/:page', PaginationMiddleWare, (ctx) => {
+            const { page } = ctx.state;
+            const locals = getPageLocals(page);
+            if (locals.articles.length > 0) {
+                ctx.body = this.page.render('index.pug', locals);
             }
         });
         coreRouter.get('/tag/:tag', ctx => {
-            ctx.body = this.page.render('index.pug', getPageLocals(1, ctx.params.tag));
+            const locals = getPageLocals(1, ctx.params.tag);
+            if (locals.articles.length > 0) {
+                ctx.body = this.page.render('index.pug', locals);
+            }
+        });
+        coreRouter.get('/tag/:tag/page/:page', PaginationMiddleWare, (ctx) => {
+            const { tag } = ctx.params;
+            const { page } = ctx.state;
+            const locals = getPageLocals(page, tag);
+            if (locals.articles.length > 0) {
+                ctx.body = this.page.render('index.pug', locals);
+            }
         });
         coreRouter.get('/article/:name', (ctx) => {
             const a = this.state.articles.find(a => a.file.base === ctx.params.name);
@@ -185,8 +216,6 @@ class BlogServer {
                     ...this.config.templateArgs,
                     article: a,
                 });
-            } else {
-                ctx.response.status = 404;
             }
         });
         this.app.use(coreRouter.routes());

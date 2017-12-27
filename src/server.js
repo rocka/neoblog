@@ -72,7 +72,16 @@ class BlogServer {
         this.config = BlogServer.ParseConfig(rawConf);
         this.state = {
             /** @type {Article[]} */
-            articles: []
+            articles: [],
+            /** @type {Object.<string, Article[]>} */
+            tags: new Proxy({}, {
+                get(target, name) {
+                    if (!(name in target)) {
+                        target[name] = [];
+                    }
+                    return target[name];
+                }
+            })
         };
         this.list = new ArticleList({
             basePath: this.config.articleDir,
@@ -87,22 +96,38 @@ class BlogServer {
         // reference `ctx.app.server` to `BlogServer` instance
         this.app.server = this;
 
+        // add article to article list / tag list
+        const handleArticleChange = article => {
+            this.state.articles.push(article);
+            this.state.articles.sort((a, b) => b.meta.date - a.meta.date);
+            article.meta.tags.forEach(tag => {
+                this.state.tags[tag].length;
+                this.state.tags[tag].push(article);
+                this.state.tags[tag].sort((a, b) => b.meta.date - a.meta.date);
+            });
+        };
+
+        // delete article matches given meta from Article[]
+        const findAndDel = (meta, array) => {
+            const index = array.findIndex(a => meta.base.indexOf(a.file.base) === 0);
+            array.splice(index, 1);
+        };
+
         // parse and watch articles
         this.list.on('create', async meta => {
             const current = await this.parser.parse(meta);
-            this.state.articles.push(current);
-            this.state.articles.sort((a, b) => b.meta.date - a.meta.date);
+            handleArticleChange(current);
         });
         this.list.on('remove', meta => {
-            const index = this.state.articles.findIndex(a => meta.base.indexOf(a.file.base) === 0);
-            this.state.articles.splice(index, 1);
+            findAndDel(meta, this.state.articles);
+            Object.keys(this.state.tags).forEach(k => findAndDel(meta, this.state.tags[k]));
         });
         this.list.on('change', async meta => {
             const old = this.state.articles.find(a => meta.base.indexOf(a.file.base) === 0);
             if (old) {
                 const current = await this.parser.parse(meta);
                 Object.assign(old, current);
-                this.state.articles.sort((a, b) => b.meta.date - a.meta.date);
+                handleArticleChange(current);
             }
         });
 
@@ -110,13 +135,15 @@ class BlogServer {
          * generate pug locals for `/page/:page`
          * 
          * @param {number} page page number
+         * @param {string} tag article tag
          */
-        const getPageLocals = (page) => {
+        const getPageLocals = (page, tag) => {
             const offset = (page - 1) * this.config.articlesPerPage;
             const total = Math.round(this.state.articles.length / this.config.articlesPerPage + 0.5);
+            const articles = tag ? this.state.tags[tag] : this.state.articles;
             return {
                 ...this.config.templateArgs,
-                articles: this.state.articles.slice(offset, offset + this.config.articlesPerPage),
+                articles: articles.slice(offset, offset + this.config.articlesPerPage),
                 pagination: {
                     current: page,
                     prev: page > 1 ? page - 1 : false,
@@ -147,6 +174,9 @@ class BlogServer {
                     ctx.body = this.page.render('index.pug', getPageLocals(page));
                 }
             }
+        });
+        coreRouter.get('/tag/:tag', ctx => {
+            ctx.body = this.page.render('index.pug', getPageLocals(1, ctx.params.tag));
         });
         coreRouter.get('/article/:name', (ctx) => {
             const a = this.state.articles.find(a => a.file.base === ctx.params.name);

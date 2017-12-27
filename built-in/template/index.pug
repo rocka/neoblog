@@ -14,6 +14,6 @@ block content
     if pagination
         p(class="pagination")
             if pagination.prev
-                a(class="prev" href=`/page/${pagination.prev}`) <- PREV
+                a(class="prev" href=`${pagination.prefix}/page/${pagination.prev}`) <- PREV
             if pagination.next
-                a(class="next" href=`/page/${pagination.next}`) NEXT ->
+                a(class="next" href=`${pagination.prefix}/page/${pagination.next}`) NEXT ->

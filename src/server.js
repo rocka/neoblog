@@ -165,7 +165,7 @@ class BlogServer {
         const getPageLocals = (page, tag) => {
             const offset = (page - 1) * this.config.articlesPerPage;
             const articles = tag ? this.state.tags[tag] : this.state.articles;
-            const total = Math.round(articles.length / this.config.articlesPerPage + 0.5);
+            const total = Math.ceil(articles.length / this.config.articlesPerPage);
             return {
                 ...this.config.templateArgs,
                 articles: articles.slice(offset, offset + this.config.articlesPerPage),

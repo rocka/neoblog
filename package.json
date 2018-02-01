@@ -28,6 +28,9 @@
     "koa-mount": "^3.0.0",
     "koa-router": "^7.3.0",
     "koa-static-cache": "^5.1.1",
+    "lodash.differenceby": "^4.8.0",
+    "lodash.intersectionby": "^4.7.0",
+    "lodash.uniqby": "^4.7.0",
     "marked": "^0.3.9",
     "pug": "^2.0.0-rc.4"
   }

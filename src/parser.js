@@ -94,7 +94,7 @@ class ArticleParser extends EventEmitter {
             const more = excerpt.length < html.length;
             return { file, meta, src, html, excerpt, more };
         } catch (err) {
-            const msg = `<pre>Error when parsing:\n${file.path}\n${err.name}\n${err.message}\n${err.stack}</pre>`;
+            const msg = `<pre>Error when parsing:\n${file.path}\n\n${err.stack}</pre>`;
             return {
                 meta: {
                     tags: ['error'],

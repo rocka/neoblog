@@ -105,40 +105,55 @@ class BlogServer {
             await next();
         });
 
-        // push (article) element into array and sort by date
-        const pushAndSort = (element, array) => {
-            array.push(element);
+        /**
+         * push (article) element into array and sort by date
+         * @param {Article} article 
+         * @param {Article[]} array 
+         */
+        const pushAndSort = (article, array) => {
+            array.push(article);
             array.sort((a, b) => b.meta.date - a.meta.date);
         };
 
-        // add article to article list / tag list
-        const handleArticleChange = article => {
+        /**
+         * add article to article list / tag list
+         * @param {FileMeta} meta 
+         */
+        const handleArticleCreate = async meta => {
+            const article = await this.parser.parse(meta);
             pushAndSort(article, this.state.articles);
             article.meta.tags.forEach(tag => pushAndSort(article, this.state.tags[tag]));
         };
 
-        // delete article matches given meta from Article[]
+        /**
+         * delete article matches given meta from Article[]
+         * @param {FileMeta} meta 
+         * @param {Article[]} array 
+         */
         const findAndDel = (meta, array) => {
             const index = array.findIndex(a => meta.base.indexOf(a.file.base) === 0);
             array.splice(index, 1);
         };
 
-        // parse and watch articles
-        this.list.on('create', async meta => {
-            const current = await this.parser.parse(meta);
-            handleArticleChange(current);
-        });
-        this.list.on('remove', meta => {
+        /**
+         * remove aritlce matches given meta from `this.articles` and `this.tags`
+         * @param {FileMeta} meta 
+         */
+        const handleArticleRemove = meta => {
             findAndDel(meta, this.state.articles);
             Object.keys(this.state.tags).forEach(k => findAndDel(meta, this.state.tags[k]));
-        });
+        };
+
+        // parse and watch articles
+        this.list.on('create', handleArticleCreate);
+        this.list.on('remove', handleArticleRemove);
         this.list.on('change', async meta => {
             const old = this.state.articles.find(a => meta.base.indexOf(a.file.base) === 0);
             if (old) {
-                const current = await this.parser.parse(meta);
-                Object.assign(old, current);
-                handleArticleChange(current);
+                handleArticleRemove(old.file);
             }
+            const current = await this.parser.parse(meta);
+            handleArticleCreate(current.file);
         });
 
         // middleware for parsing pagination like `/page/:page`

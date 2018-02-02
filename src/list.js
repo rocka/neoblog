@@ -34,16 +34,14 @@ class ArticleList extends EventEmitter {
     _init() {
         this.readFiles()
             .then(files => {
-                files.forEach(file => this.emit('create', file));
-                this.files = files;
+                this.files = files.filter(file => this.nameRegxp.test(file.path));
+                this.files.forEach(file => this.emit('create', file));
             });
         fs.watch(this.basePath, (type, fileName) => {
-            if (!fileName.match(this.nameRegxp)) return;
+            if (!this.nameRegxp.test(fileName)) return;
             const file = this.resolveFileName(fileName);
-            if (type === 'change') {
-                this._changedList.push(file);
-                this._changedList = _.uniqBy(this._changedList, 'base');
-            }
+            this._changedList.push(file);
+            this._changedList = _.uniqBy(this._changedList, 'base');
             if (!this.emitTimer) {
                 this.emitTimer = this.createEmitTimer();
             } else {
@@ -60,12 +58,11 @@ class ArticleList extends EventEmitter {
      * @returns {FileMeta}
      */
     resolveFileName(fileName = '') {
-        const regxp = /^(([^.]+\.?)*)\.([^.]+)?$/;
-        const result = regxp.exec(fileName);
+        const pathObj = path.parse(fileName);
         return {
             path: path.join(this.basePath, fileName),
-            base: result[1],
-            ext: result[3] || ''
+            base: pathObj.name,
+            ext: pathObj.ext.slice(1)
         };
     }
 
@@ -104,13 +101,17 @@ class ArticleList extends EventEmitter {
             const eventsList = {
                 create: _.differenceBy(newFiles, this.files, 'base'),
                 remove: _.differenceBy(this.files, newFiles, 'base'),
-                change: _.intersectionBy(newFiles, this._changedList, 'base')
+                change: _.intersectionBy(newFiles, this.files, this._changedList, 'base')
             };
-            Object.entries(eventsList)
-                .forEach(([type, array]) => {
-                    array.forEach(ev => this.emit(type, ev));
-                    eventsList[type] = [];
+            this.files = newFiles;
+            this._changedList = [];
+            Object.entries(eventsList).forEach(([type, array]) => {
+                array.forEach(ev => {
+                    console.log(`[ArticleList] ${type}: ${ev.base}`);
+                    this.emit(type, ev);
                 });
+                eventsList[type] = [];
+            });
         }).bind(this), timeout);
     }
 }

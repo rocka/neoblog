@@ -131,7 +131,7 @@ class BlogServer {
          * @param {Article[]} array 
          */
         const findAndDel = (meta, array) => {
-            const index = array.findIndex(a => meta.base.indexOf(a.file.base) === 0);
+            const index = array.findIndex(a => meta.base === a.file.base);
             array.splice(index, 1);
         };
 
@@ -148,7 +148,7 @@ class BlogServer {
         this.list.on('create', handleArticleCreate);
         this.list.on('remove', handleArticleRemove);
         this.list.on('change', async meta => {
-            const old = this.state.articles.find(a => meta.base.indexOf(a.file.base) === 0);
+            const old = this.state.articles.find(a => meta.base === a.file.base);
             if (old) {
                 handleArticleRemove(old.file);
             }

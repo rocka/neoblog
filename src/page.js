@@ -1,5 +1,6 @@
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const EventEmitter = require('events');
 
@@ -15,9 +16,7 @@ class PageRenderer extends EventEmitter {
             ...baseLocals,
             assets: name => `/assets/${name}`,
             formatDate(dt) {
-                if (!(dt instanceof Date)) {
-                    dt = new Date(dt);
-                }
+                if (!(dt instanceof Date)) dt = new Date(dt);
                 return dt.toLocaleDateString('zh', {
                     year: 'numeric',
                     month: '2-digit',
@@ -28,7 +27,12 @@ class PageRenderer extends EventEmitter {
                 });
             },
         };
-        this.renderCache = new Map();
+        fs.watch(basePath, (event, filename) => {
+            if (Reflect.ownKeys(Pug.cache).length) {
+                console.log(`[PageRenderer] ${event}: ${filename}, clear cache`);
+                Pug.cache = {};
+            }
+        });
     }
 
     /**

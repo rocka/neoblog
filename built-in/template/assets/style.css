@@ -26,7 +26,7 @@ aside {
     top: 0;
     bottom: 0;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 aside > p:first-child {
@@ -55,7 +55,7 @@ aside a {
 aside a:hover,
 aside a:visited,
 aside a:active {
-     color: white;
+    color: white;
 }
 
 aside ul {
@@ -104,7 +104,7 @@ h2::after,
 h3::after,
 h4::after,
 h5::after {
-    content: '#';
+    content: "#";
     position: absolute;
     right: 0;
     color: #707070;

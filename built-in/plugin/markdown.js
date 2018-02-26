@@ -21,9 +21,9 @@ renderer.image = function (href, title, text) {
 };
 
 renderer.heading = function (text, level) {
-    const escaped = EscapeHTML(text);
-    // <h1><a name="heading" href="#heading" class="anchor"><span class="header-link">heading</span></a></h1>
-    return `<h${level}><a name="${escaped}" href="#${escaped}" class="anchor"><span class="header-link">${text}</span></a></h${level}>`;
+    const escaped = EscapeHTML(text).replace(/ /g, '_');
+    // <h1><a id="heading" href="#heading" class="anchor"><span class="header-link">heading</span></a></h1>
+    return `<h${level}><a id="${escaped}" href="#${escaped}" class="anchor"><span class="header-link">${text}</span></a></h${level}>`;
 };
 
 renderer.code = function (code, lang) {

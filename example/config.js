@@ -18,6 +18,8 @@ module.exports = {
     ],
     // arguments passed to template. can be anything but null.
     templateArgs: {
+        // <html lang="">
+        lang: 'en',
         indexHeading: 'NeoBlog\'s default template theme',
         side: {
             title: 'NeoBlog',

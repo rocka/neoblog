@@ -96,7 +96,7 @@ class BlogServer {
         // reference `ctx.app.server` to `BlogServer` instance
         this.app.server = this;
 
-        // path should not end with '/' expect index
+        // path should not end with '/' except index
         this.app.use(async (ctx, next) => {
             if (ctx.path.endsWith('/') && ctx.path !== '/') {
                 ctx.status = 301;
@@ -234,14 +234,11 @@ class BlogServer {
             }
         });
         this.app.use(coreRouter.routes());
-        this.app.use(KoaMount(
-            '/assets',
-            KoaStatic(path.join(this.config.templateDir, 'assets'), {
-                maxAge: 365 * 24 * 60 * 60,
-                gzip: true,
-                usePrecompiledGzip: true
-            })
-        ));
+        this.app.use(KoaMount('/assets', KoaStatic({
+            dir: path.join(this.config.templateDir, 'assets'),
+            preload: false,
+            dynamic: true
+        })));
         const builtInPlugins = require(this.builtInPluginPath);
         builtInPlugins.forEach(this.installPlugin.bind(this));
         this.config.plugins.forEach(this.installPlugin.bind(this));

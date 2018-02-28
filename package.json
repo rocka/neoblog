@@ -31,7 +31,7 @@
     "lodash.differenceby": "^4.8.0",
     "lodash.intersectionby": "^4.7.0",
     "lodash.uniqby": "^4.7.0",
-    "marked": "^0.3.16",
+    "marked": "^0.3.17",
     "pug": "^2.0.0-rc.4"
   }
 }

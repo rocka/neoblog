@@ -1,6 +1,6 @@
 {
   "name": "neoblog",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Lightweight bloging platform",
   "bin": {
     "neoblog": "bin/neoblog.js"

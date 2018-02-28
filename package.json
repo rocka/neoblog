@@ -1,5 +1,5 @@
 {
-  "name": "neoblog",
+  "name": "@neoblog/neoblog",
   "version": "0.1.0",
   "description": "Lightweight bloging platform",
   "bin": {
@@ -12,7 +12,8 @@
     "node": ">=7.6.0"
   },
   "keywords": [
-    "blog"
+    "blog",
+    "neoblog"
   ],
   "author": "rocka <i@rocka.me>",
   "repository": {

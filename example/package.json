@@ -6,7 +6,7 @@
     "start": "neoblog"
   },
   "dependencies": {
-    "neoblog": "../"
+    "@neoblog/neoblog": "^0.1.0"
   },
   "author": "rocka",
   "license": "MIT"

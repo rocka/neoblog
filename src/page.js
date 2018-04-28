@@ -15,6 +15,15 @@ class PageRenderer extends EventEmitter {
         this.baseLocals = {
             ...baseLocals,
             assets: name => `/assets/${name}`,
+            oneOf(a) {
+                if (Array.isArray(a)) return a[Math.floor(Math.random() * a.length)];
+                return a;
+            },
+            firstTruely(...args) {
+                for (const i of args) {
+                    if (i) return i;
+                }
+            },
             formatDate(dt) {
                 if (!(dt instanceof Date)) dt = new Date(dt);
                 return dt.toLocaleDateString('zh', {

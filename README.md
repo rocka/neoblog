@@ -19,5 +19,5 @@ Under construction.
 
 [npm-badge]: https://img.shields.io/npm/v/@neoblog/neoblog.svg
 [npm-link]: https://www.npmjs.com/package/@neoblog/neoblog
-[david-badge]: https://david-dm.org/@neoblog/neoblog/status.svg
-[david-link]: https://david-dm.org/@neoblog/neoblog
+[david-badge]: https://david-dm.org/rocka/neoblog/status.svg
+[david-link]: https://david-dm.org/rocka/neoblog

@@ -14,7 +14,7 @@ const PageRenderer = require('./page');
 /** 
  * @typedef {{path: string, base: string, ext: string}} FileMeta 
  * @typedef {{title: string; date: Date; tags: string[]}} ArticleMeta
- * @typedef {{src: string; html: string; file: FileMeta; meta: ArticleMeta, more: boolean}} Article
+ * @typedef {{meta: ArticleMeta; file: FileMeta; src: string; html: string; excerpt: string; excerptText: string; excerptImg: string; more: boolean}} Article
  */
 
 class BlogServer {

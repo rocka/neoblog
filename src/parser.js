@@ -91,8 +91,10 @@ class ArticleParser extends EventEmitter {
             meta.date = new Date(meta.date);
             const html = (await this.parseContent(file, src.replace(metaRegxp, ''))).trim();
             const excerpt = ArticleParser.excerptHTML(html);
+            const excerptText = excerpt.replace(/<[^>]+>/g, '');
+            const excerptImg = (html.match(/<img.+?src="([^"]+)"/) || [])[1];
             const more = excerpt.length < html.length;
-            return { file, meta, src, html, excerpt, more };
+            return { file, meta, src, html, excerpt, excerptText, excerptImg, more };
         } catch (err) {
             const msg = `<pre>Error when parsing:\n${file.path}\n\n${err.stack}</pre>`;
             return {
@@ -105,6 +107,8 @@ class ArticleParser extends EventEmitter {
                 src: msg,
                 html: msg,
                 excerpt: msg,
+                excerptText: msg,
+                excerptImg: '',
                 more: false
             };
         }

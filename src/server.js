@@ -176,14 +176,17 @@ class BlogServer {
          * 
          * @param {number} page page number
          * @param {string} tag article tag
+         * @param {Router.IRouterContext} ctx request context
          */
-        const getPageLocals = (page, tag) => {
+        const getPageLocals = (page, tag, ctx) => {
             const offset = (page - 1) * this.config.articlesPerPage;
             const articles = tag ? this.state.tags[tag] : this.state.articles;
             const total = Math.ceil(articles.length / this.config.articlesPerPage);
+            const host = ctx.get('host') || '';
             return {
                 ...this.config.templateArgs,
                 articles: articles.slice(offset, offset + this.config.articlesPerPage),
+                host,
                 pagination: {
                     current: page,
                     prefix: tag ? `/tag/${tag}` : '',
@@ -201,17 +204,17 @@ class BlogServer {
         // `/article/:name`
         const coreRouter = new KoaRouter();
         coreRouter.get('/', (ctx) => {
-            ctx.body = this.page.render('index.pug', getPageLocals(1));
+            ctx.body = this.page.render('index.pug', getPageLocals(1, null, ctx));
         });
         coreRouter.get('/page/:page', PaginationMiddleWare, (ctx) => {
             const { page } = ctx.state;
-            const locals = getPageLocals(page);
+            const locals = getPageLocals(page, null, ctx);
             if (locals.articles.length > 0) {
                 ctx.body = this.page.render('index.pug', locals);
             }
         });
         coreRouter.get('/tag/:tag', ctx => {
-            const locals = getPageLocals(1, ctx.params.tag);
+            const locals = getPageLocals(1, ctx.params.tag, ctx);
             if (locals.articles.length > 0) {
                 ctx.body = this.page.render('index.pug', locals);
             }
@@ -219,7 +222,7 @@ class BlogServer {
         coreRouter.get('/tag/:tag/page/:page', PaginationMiddleWare, (ctx) => {
             const { tag } = ctx.params;
             const { page } = ctx.state;
-            const locals = getPageLocals(page, tag);
+            const locals = getPageLocals(page, tag, ctx);
             if (locals.articles.length > 0) {
                 ctx.body = this.page.render('index.pug', locals);
             }

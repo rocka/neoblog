@@ -15,6 +15,13 @@ class PageRenderer extends EventEmitter {
         this.baseLocals = {
             ...baseLocals,
             assets: name => `/assets/${name}`,
+            permalink(host = '', path = '') {
+                if (!path) return '';
+                if (path.match(/^https?:/)) return path;
+                if (path.startsWith('//')) return `http:${path}`;
+                if (path[0] !== '/') path = `/${path}`;
+                return `http://${host}${path}`;
+            },
             oneOf(a) {
                 if (Array.isArray(a)) return a[Math.floor(Math.random() * a.length)];
                 return a;

@@ -11,7 +11,7 @@ if (typeof process.stdin.setRawMode === 'function') {
 const Server = require('./src/server');
 const configPath = Path.join(process.cwd(), 'config.js');
 
-const neoblog = new Server(configPath);
+let neoblog = new Server(configPath);
 
 neoblog.start();
 
@@ -20,7 +20,7 @@ process.stdin.on('keypress', (ch, key) => {
         switch (key.name) {
             case 'r':
                 console.log('\nCtrl-R pressed, reloading config...');
-                neoblog.reload();
+                neoblog.reload().then(s => neoblog = s);
                 break;
             case 'c':
                 console.log('\nCtrl-C pressed, exiting...');

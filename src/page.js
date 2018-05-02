@@ -43,7 +43,7 @@ class PageRenderer extends EventEmitter {
                 });
             },
         };
-        fs.watch(basePath, (event, filename) => {
+        this.watcher = fs.watch(basePath, (event, filename) => {
             if (Reflect.ownKeys(Pug.cache).length) {
                 console.log(`[PageRenderer] ${event}: ${filename}, clear cache`);
                 Pug.cache = {};
@@ -66,6 +66,11 @@ class PageRenderer extends EventEmitter {
             ...this.baseLocals,
             ...locals
         });
+    }
+
+    destroy() {
+        Pug.cache = {};
+        this.watcher.close();
     }
 }
 

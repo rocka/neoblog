@@ -37,7 +37,7 @@ class ArticleList extends EventEmitter {
                 this.files = files.filter(file => this.nameRegxp.test(file.path));
                 this.files.forEach(file => this.emit('create', file));
             });
-        fs.watch(this.basePath, (type, fileName) => {
+        this.watcher = fs.watch(this.basePath, (type, fileName) => {
             if (!this.nameRegxp.test(fileName)) return;
             const file = this.resolveFileName(fileName);
             this._changedList.push(file);
@@ -113,6 +113,12 @@ class ArticleList extends EventEmitter {
                 eventsList[type] = [];
             });
         }).bind(this), timeout);
+    }
+
+    destroy() {
+        this.watcher.close();
+        this.removeAllListeners();
+        if (this.emitTimer) clearTimeout(this.emitTimer);
     }
 }
 

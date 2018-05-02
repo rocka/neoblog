@@ -91,7 +91,7 @@ class ArticleParser extends EventEmitter {
             meta.date = new Date(meta.date);
             const html = (await this.parseContent(file, src.replace(metaRegxp, ''))).trim();
             const excerpt = ArticleParser.excerptHTML(html);
-            const excerptText = excerpt.replace(/<[^>]+>/g, '');
+            const excerptText = excerpt.replace(/<[^>]+>/g, '').slice(0, 150);
             const excerptImg = (html.match(/<img.+?src="([^"]+)"/) || [])[1];
             const more = excerpt.length < html.length;
             return { file, meta, src, html, excerpt, excerptText, excerptImg, more };
@@ -112,6 +112,9 @@ class ArticleParser extends EventEmitter {
                 more: false
             };
         }
+    }
+    destroy() {
+        this.removeAllListeners();
     }
 }
 

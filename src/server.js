@@ -262,18 +262,26 @@ class BlogServer {
         }
     }
 
+    /**
+     * @returns {Promise<BlogServer>}
+     */
     start() {
         return new Promise((resolve) => {
             this._server = this.app.listen(this.config.port, () => {
                 console.log(`Listening on port ${this.config.port}`);
-                resolve();
+                resolve(this);
             });
         });
     }
 
+    /**
+     * @returns {Promise<void>}
+     */
     stop() {
         return new Promise((resolve) => {
-            this.list.removeAllListeners();
+            this.list.destroy();
+            this.parser.destroy();
+            this.page.destroy();
             this._server.close(() => {
                 console.log('Server closed');
                 resolve();
@@ -281,26 +289,17 @@ class BlogServer {
         });
     }
 
+    /**
+     * @returns {Promise<BlogServer>}
+     */
     reload() {
         return new Promise((resolve) => {
-            // clear config cache
-            require.cache[this.configPath] = null;
-            // clear built-in plugin cache
-            require.cache[this.builtInPluginPath] = null;
-            for (let key in require.cache) {
-                /** @type {NodeJS.Module} */
-                const cached = require.cache[key];
-                if (key.indexOf(this.builtInPluginPath) === 0 || // is a built-in plugin
-                    // I really need optional-chaining ...
-                    (cached && cached.parent && cached.parent.filename === this.configPath) // required by `config.js`
-                ) {
-                    require.cache[key] = null;
-                    console.log('Clear require cache', path.relative('.', key));
-                }
+            for (const key in require.cache) {
+                delete require.cache[key];
             }
             this.stop().then(() => {
-                this.__init();
-                this.start().then(() => resolve());
+                const newServer = new (require('./server'))(this.configPath);
+                newServer.start().then(s => resolve(s));
             });
         });
     }

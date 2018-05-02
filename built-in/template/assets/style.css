@@ -3,7 +3,7 @@
  */
 
 html {
-    font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Tahoma, sans-serif;
+    font-family: 'Lato', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Verdana, Tahoma, sans-serif;
     color: #333;
     background: #fff;
 }
@@ -14,7 +14,7 @@ html, body {
 }
 
 a {
-    text-decoration: none;    
+    text-decoration: none;
 }
 
 aside {
@@ -68,20 +68,20 @@ aside ul li {
     list-style: none;
 }
 
-.main {
+main {
     margin-left: 234px;
     padding: 0 2rem;
 }
 
-.main a {
+main a {
     color: #43853d;
     text-decoration: none;
     border-radius: 2px;
     padding: 1px 3px;
 }
 
-.main a:hover,
-.main a:focus {
+main a:hover,
+main a:focus {
     color: #fff;
     background-color: #43853d;
     outline: none;
@@ -105,7 +105,7 @@ h2::after,
 h3::after,
 h4::after,
 h5::after {
-    content: "#";
+    content: '#';
     position: absolute;
     right: 0;
     color: #707070;
@@ -119,81 +119,81 @@ h5:hover::after {
     color: #43853d;
 }
 
-.main article p.meta {
+main article p.meta {
     color: grey;
     font-size: 0.9rem;
 }
 
-.main .pagination {
+main .pagination {
     margin-bottom: 2rem;
 }
 
-.main blockquote {
+main blockquote {
     border-left: 2px solid #040404;
 }
 
-.main blockquote p {
+main blockquote p {
     margin: 0;
 }
 
-.main blockquote,
-.main pre {
+main blockquote,
+main pre {
     padding: 1rem;
     margin: 1rem;
 }
 
-.main code {
+main code {
     color: #040404;
     background-color: #f2f2f2;
 }
 
-.main p code {
+main p code {
     border-radius: 2px;
     padding: 1px 3px;
     line-height: 1.5rem;
 }
 
-.main figure {
+main figure {
     text-align: center;
 }
 
-.main figure img {
+main figure img {
     max-width: 800px;
     margin: auto;
 }
 
-.main ul,
-.main ol {
+main ul,
+main ol {
     padding: 0;
     margin-left: 1.2rem;
 }
 
-.main ul li,
-.main ol li {
+main ul li,
+main ol li {
     padding: 0.2rem 0;
 }
 
-.main ul li.task-item {
+main ul li.task-item {
     list-style-type: none;
     margin-left: -1.2rem;
 }
 
-.main table {
+main table {
     margin: 1rem;
     border-top: 1px solid grey;
     border-bottom: 1px solid grey;
     border-collapse: collapse;
 }
 
-.main table thead {
+main table thead {
     background-color: #f2f2f2;
 }
 
-.main table tr th,
-.main table tr td {
+main table tr th,
+main table tr td {
     padding: 0.4em 1em;
 }
 
-.main table tbody tr:not(:last-child) td {
+main table tbody tr:not(:last-child) td {
     border-bottom: 1px solid #ddd;
 }

@@ -20,15 +20,28 @@ module.exports = {
     templateArgs: {
         // <html lang="">
         lang: 'en',
+        head: {
+            meta: [
+                // charset, name, content, httpEquiv
+                { charset: 'UTF-8' },
+                { name: 'theme-color', content: '#333' },
+                { httpEquiv: 'content-security-policy', content: 'script-src \'self\';' }
+            ],
+            link: [
+                // as, rel, href, crossorigin, media, sizes, type, title
+                { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Lato:400,700,400italic' }
+            ],
+            script: [
+                // async, defer, charset, src, type
+                { src: '/assets/script.js' }
+            ]
+        },
         indexHeading: 'NeoBlog\'s default template theme',
         side: {
             title: 'NeoBlog',
             items: [
                 [
-                    {
-                        name: 'Index',
-                        link: '/'
-                    }
+                    { name: 'Index', link: '/' }
                 ],
                 [
                     { text: `OS: ${process.platform} ${process.arch}` },

@@ -4,14 +4,41 @@ html(lang=lang || 'en')
         block head
             meta(http-equiv="X-UA-Compatible", content="ie=edge")
             meta(name="viewport", content="width=device-width, initial-scale=1.0")
+            if head.meta
+                each m in head.meta
+                    meta(
+                        charset=m.charset || false
+                        name=m.name || false
+                        content=m.content || false
+                        http-equiv=m.httpEquiv || false
+                    )
             if article && article.meta && article.meta.title
                 title #{article.meta.title} | #{config.title}
             else
                 title #{config.title}
             link(rel="stylesheet", href=assets('style.css'))
             link(rel="stylesheet", href=assets('highlight.css'))
-            link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic")
-            script(src=assets('script.js'))
+            if head.link
+                each l in head.link
+                    link(
+                        as=l.as || false
+                        rel=l.rel || false
+                        href=l.href || false
+                        crossorigin=l.crossorigin || false
+                        media=l.media || false
+                        sizes=l.sizes || false
+                        type=l.type || false
+                        title=l.title || false
+                    )
+            if head.script
+                each s in head.script
+                    script(
+                        async=s.async || false 
+                        defer=s.defer || false 
+                        charset=s.charset || false 
+                        src=s.src || false 
+                        type=s.type || false
+                    )
     body
         block side
             include side

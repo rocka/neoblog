@@ -6,11 +6,6 @@ const EventEmitter = require('events');
 
 const read = util.promisify(fs.readFile);
 
-/** 
- * @typedef {{path: string, base: string, ext: string}} FileMeta 
- * @typedef {{title: string; date: Date; tags: string[]}} ArticleMeta
- */
-
 class ArticleParser extends EventEmitter {
     constructor() {
         super();
@@ -28,7 +23,6 @@ class ArticleParser extends EventEmitter {
      * @static
      * @param {string} html 
      * @returns {string}
-     * @memberof ArticleParser
      */
     static excerptHTML(html) {
         const imgRegxp = /<img[^>]+>/;
@@ -59,7 +53,7 @@ class ArticleParser extends EventEmitter {
     /**
      * convert article src to html asynchronously
      * 
-     * @param {FileMeta} file file ext name
+     * @param {Model.FileMeta} file file ext name
      * @param {string} src article content string
      */
     parseContent(file, src) {
@@ -77,16 +71,15 @@ class ArticleParser extends EventEmitter {
     /**
      * Parse file to Article Object
      * 
-     * @param {FileMeta} file 
-     * @returns {Article}
-     * @memberof ArticleParser
+     * @param {Model.FileMeta} file 
+     * @returns {Model.Article}
      */
     async parse(file) {
         const metaRegxp = /```meta\n([^`]+)\n```/g;
         try {
             const src = (await read(file.path)).toString();
             const result = metaRegxp.exec(src);
-            /** @type {ArticleMeta} */
+            /** @type {Model.ArticleMeta} */
             const meta = JSON.parse(result[1]);
             meta.date = new Date(meta.date);
             const html = (await this.parseContent(file, src.replace(metaRegxp, ''))).trim();

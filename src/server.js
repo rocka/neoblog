@@ -12,12 +12,6 @@ const ArticleList = require('./list');
 const ArticleParser = require('./parser');
 const PageRenderer = require('./page');
 
-/** 
- * @typedef {{path: string, base: string, ext: string}} FileMeta 
- * @typedef {{title: string; date: Date; tags: string[]}} ArticleMeta
- * @typedef {{meta: ArticleMeta; file: FileMeta; src: string; html: string; excerpt: string; excerptText: string; excerptImg: string; more: boolean}} Article
- */
-
 class BlogServer extends EventEmitter {
     static ParseConfig(input) {
         if (!input) throw new Error('config cannot be null!');
@@ -73,9 +67,9 @@ class BlogServer extends EventEmitter {
         }
         this.config = BlogServer.ParseConfig(rawConf);
         this.state = {
-            /** @type {Article[]} */
+            /** @type {Model.Article[]} */
             articles: [],
-            /** @type {Object.<string, Article[]>} */
+            /** @type {Object.<string, Model.Article[]>} */
             tags: new Proxy({}, {
                 get(target, name) {
                     if (!(name in target)) {
@@ -109,8 +103,8 @@ class BlogServer extends EventEmitter {
 
         /**
          * push (article) element into array and sort by date
-         * @param {Article} article 
-         * @param {Article[]} array 
+         * @param {Model.Article} article 
+         * @param {Model.Article[]} array 
          */
         const pushAndSort = (article, array) => {
             array.push(article);
@@ -119,7 +113,7 @@ class BlogServer extends EventEmitter {
 
         /**
          * add article to article list / tag list
-         * @param {FileMeta} meta 
+         * @param {Model.FileMeta} meta 
          */
         const handleArticleCreate = async meta => {
             const article = await this.parser.parse(meta);
@@ -129,8 +123,8 @@ class BlogServer extends EventEmitter {
 
         /**
          * delete article matches given meta from Article[]
-         * @param {FileMeta} meta 
-         * @param {Article[]} array 
+         * @param {Model.FileMeta} meta 
+         * @param {Model.Article[]} array 
          */
         const findAndDel = (meta, array) => {
             const index = array.findIndex(a => meta.base === a.file.base);
@@ -139,7 +133,7 @@ class BlogServer extends EventEmitter {
 
         /**
          * remove aritlce matches given meta from `this.articles` and `this.tags`
-         * @param {FileMeta} meta 
+         * @param {Model.FileMeta} meta 
          */
         const handleArticleRemove = meta => {
             findAndDel(meta, this.state.articles);

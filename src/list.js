@@ -10,10 +10,6 @@ const _ = {
     intersectionBy: require('lodash.intersectionby')
 };
 
-/** 
- * @typedef {{path: string, base: string, ext: string}} FileMeta
- */
-
 class ArticleList extends EventEmitter {
     constructor({ basePath, nameRegxp }) {
         super();
@@ -24,9 +20,9 @@ class ArticleList extends EventEmitter {
         this.nameRegxp = nameRegxp;
         /** @type {NodeJS.Timer} */
         this.emitTimer = null;
-        /** @type {FileMeta[]} */
+        /** @type {Model.FileMeta[]} */
         this.files = [];
-        /** @type {FileMeta[]} */
+        /** @type {Model.FileMeta[]} */
         this._changedList = [];
         this._init();
     }
@@ -55,7 +51,7 @@ class ArticleList extends EventEmitter {
      * parse file name into FileMeta
      * 
      * @param {string} [fileName=''] 
-     * @returns {FileMeta}
+     * @returns {Model.FileMeta}
      */
     resolveFileName(fileName = '') {
         const pathObj = path.parse(fileName);
@@ -69,7 +65,7 @@ class ArticleList extends EventEmitter {
     /**
      * Parse file matches `nameRegxp` under `bathPath` to `FileMeta[]`
      * 
-     * @returns {Promise<FileMeta[]>}
+     * @returns {Promise<Model.FileMeta[]>}
      */
     async readFiles() {
         return new Promise((resolve, reject) => {
@@ -77,7 +73,7 @@ class ArticleList extends EventEmitter {
                 if (err) {
                     reject(err);
                 } else {
-                    /** @type {FileMeta[]} */
+                    /** @type {Model.FileMeta[]} */
                     const files = fileNames
                         .filter(name => name.match(this.nameRegxp))
                         .map(this.resolveFileName.bind(this));

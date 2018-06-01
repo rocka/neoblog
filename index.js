@@ -12,8 +12,8 @@ const Server = require('./src/server');
 const configPath = Path.join(process.cwd(), 'config.js');
 
 let neoblog = new Server(configPath);
-
 neoblog.start();
+neoblog.on('reload', prom => prom.then(s => neoblog = s));
 
 process.stdin.on('keypress', (ch, key) => {
     if (key && key.ctrl) {

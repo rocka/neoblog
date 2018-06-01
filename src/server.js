@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const EventEmitter = require('events');
 
 const Koa = require('koa');
 const KoaRouter = require('koa-router');
@@ -17,7 +18,7 @@ const PageRenderer = require('./page');
  * @typedef {{meta: ArticleMeta; file: FileMeta; src: string; html: string; excerpt: string; excerptText: string; excerptImg: string; more: boolean}} Article
  */
 
-class BlogServer {
+class BlogServer extends EventEmitter {
     static ParseConfig(input) {
         if (!input) throw new Error('config cannot be null!');
         let config = {
@@ -57,6 +58,7 @@ class BlogServer {
     }
 
     constructor(configPath) {
+        super();
         this.configPath = configPath;
         this.builtInPluginPath = path.resolve(__dirname, '../built-in/plugin');
         this.__init();
@@ -293,15 +295,18 @@ class BlogServer {
      * @returns {Promise<BlogServer>}
      */
     reload() {
-        return new Promise((resolve) => {
+        const prom = new Promise((resolve) => {
             for (const key in require.cache) {
                 delete require.cache[key];
             }
-            this.stop().then(() => {
-                const newServer = new (require('./server'))(this.configPath);
-                newServer.start().then(s => resolve(s));
-            });
+            this.stop().then(() =>
+                new (require('./server'))(this.configPath)
+                    .start()
+                    .then(resolve)
+            );
         });
+        this.emit('reload', prom);
+        return prom;
     }
 }
 

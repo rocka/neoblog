@@ -21,7 +21,7 @@ under this directory.
 ├── config.js               # main config file
 ├── node_modules
 ├── package.json
-├── plugin                  # plugin directory (can be specificed in `config.js`)
+├── plugin                  # plugin directory (can be specified in `config.js`)
 │   └── test-api-plugin.js
 └── README.md
 ```

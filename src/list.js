@@ -13,9 +13,9 @@ const _ = {
 class ArticleList extends EventEmitter {
     constructor({ basePath, nameRegxp }) {
         super();
-        if (!basePath) throw new Error('[ArticleList] basePath not specificed.');
+        if (!basePath) throw new Error('[ArticleList] basePath not specified.');
         this.basePath = path.resolve(basePath);
-        if (!nameRegxp) throw new Error('[ArticleList] nameRegxp not specificed.');
+        if (!nameRegxp) throw new Error('[ArticleList] nameRegxp not specified.');
         /** @type {RegExp} */
         this.nameRegxp = nameRegxp;
         /** @type {NodeJS.Timer} */

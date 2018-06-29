@@ -27,15 +27,15 @@ class BlogServer extends EventEmitter {
         };
         if (!input.title) throw new Error('Please provide `title` in config.');
         else config.title = input.title;
-        if (!input.port) console.log('`config.port` not specificed. using default port `2233`.');
+        if (!input.port) console.log('`config.port` not specified. using default port `2233`.');
         else config.port = input.port;
-        if (!input.articleDir) console.log('`config.articleDir` not specificed. using default `./article`.');
+        if (!input.articleDir) console.log('`config.articleDir` not specified. using default `./article`.');
         else config.articleDir = input.articleDir;
-        if (!input.articleExt) console.log('`config.articleExt` not specificed. using default `/\\.md$/`.');
+        if (!input.articleExt) console.log('`config.articleExt` not specified. using default `/\\.md$/`.');
         else config.articleExt = input.articleExt;
-        if (!input.articlesPerPage) console.log('`config.articlesPerPage` not specificed. using default `10`.');
+        if (!input.articlesPerPage) console.log('`config.articlesPerPage` not specified. using default `10`.');
         else config.articlesPerPage = input.articlesPerPage;
-        if (!input.templateDir) console.log('`config.templateDir` not specificed. using defalut template.');
+        if (!input.templateDir) console.log('`config.templateDir` not specified. using defalut template.');
         else config.templateDir = input.templateDir;
         if (!input.plugins || input.plugins.length === 0) {
             console.log('No plugins found.');

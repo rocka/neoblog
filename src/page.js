@@ -9,9 +9,9 @@ const Pug = require('pug');
 class PageRenderer extends EventEmitter {
     constructor({ basePath, baseLocals }) {
         super();
-        if (!basePath) throw new Error('[PageRenderer] basePath not specificed.');
+        if (!basePath) throw new Error('[PageRenderer] basePath not specified.');
         this.basePath = path.resolve(basePath);
-        if (!baseLocals) throw new Error('[PageRenderer] baseLocals not specificed.');
+        if (!baseLocals) throw new Error('[PageRenderer] baseLocals not specified.');
         this.baseLocals = {
             ...baseLocals,
             assets: name => `/assets/${name}`,

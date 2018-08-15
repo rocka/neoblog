@@ -15,6 +15,7 @@ class ArticleParser extends EventEmitter {
      * get excerpt of HTML string
      * 
      * Strategy:
+     * find HTML string `<!-- more -->`, cut before it; if not found:
      * first find 1st image or figure ('</figure>)
      * then find the 5th (if not more than 5 paragraph, just the last) paragraph end ('</p>')
      * figure ends before paragraph -> cut until </figure>
@@ -25,6 +26,11 @@ class ArticleParser extends EventEmitter {
      * @returns {string}
      */
     static excerptHTML(html) {
+        const moreRegxp = /<!--[\s]*?more[\s]*?-->/i;
+        const moreResult = moreRegxp.exec(html);
+        if (moreResult) {
+            return html.substr(0, moreResult.index);
+        }
         const imgRegxp = /<img[^>]+>/;
         const imgTag = imgRegxp.exec(html);
         const firstImgEnd = imgRegxp.lastIndex + imgTag ? imgTag[0].length : 0;

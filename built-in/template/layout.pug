@@ -4,7 +4,7 @@ html(lang=lang || 'en')
         block head
             meta(http-equiv="X-UA-Compatible", content="ie=edge")
             meta(name="viewport", content="width=device-width, initial-scale=1.0")
-            if head.meta
+            if head && head.meta
                 each m in head.meta
                     meta(
                         charset=m.charset || false
@@ -18,7 +18,7 @@ html(lang=lang || 'en')
                 title #{config.title}
             link(rel="stylesheet", href=assets('style.css'))
             link(rel="stylesheet", href=assets('highlight.css'))
-            if head.link
+            if head && head.link
                 each l in head.link
                     link(
                         as=l.as || false
@@ -30,7 +30,7 @@ html(lang=lang || 'en')
                         type=l.type || false
                         title=l.title || false
                     )
-            if head.script
+            if head && head.script
                 each s in head.script
                     script(
                         async=s.async || false 

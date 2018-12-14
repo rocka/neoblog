@@ -1,11 +1,7 @@
 module.exports = {
     extends: "eslint:recommended",
     parserOptions: {
-        ecmaVersion: 8,
-        ecmaFeatures: {
-            impliedStrict: true,
-            experimentalObjectRestSpread: true
-        }
+        ecmaVersion: 2018
     },
     env: {
         browser: true,
@@ -15,7 +11,7 @@ module.exports = {
     },
     rules: {
         semi: 'error',
-        quotes: ['error', 'single'],
+        quotes: ['error', 'single', { 'avoidEscape': true }],
         'no-console': 'off'
     }
 };

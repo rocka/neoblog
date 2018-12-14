@@ -1,19 +1,22 @@
-namespace Model {
-    interface FileMeta {
+declare namespace Model {
+
+    export interface ArticleFile {
         path: string;
         base: string;
         ext: string;
     }
 
-    interface ArticleMeta {
+    export interface ArticleMeta {
         title: string;
         date: Date;
         tags: string[];
+        excerpt?: string;
+        img?: string;
     }
 
-    interface Article {
+    export interface Article {
         meta: ArticleMeta;
-        file: FileMeta;
+        file: ArticleFile;
         src: string;
         html: string;
         excerpt: string;
@@ -21,4 +24,8 @@ namespace Model {
         excerptImg: string;
         more: boolean;
     }
+
 }
+
+export = Model;
+export as namespace Model;

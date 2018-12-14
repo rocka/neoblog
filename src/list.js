@@ -20,9 +20,9 @@ class ArticleList extends EventEmitter {
         this.nameRegxp = nameRegxp;
         /** @type {NodeJS.Timer} */
         this.emitTimer = null;
-        /** @type {Model.FileMeta[]} */
+        /** @type {Model.ArticleFile[]} */
         this.files = [];
-        /** @type {Model.FileMeta[]} */
+        /** @type {Model.ArticleFile[]} */
         this._changedList = [];
         this._init();
     }
@@ -48,10 +48,10 @@ class ArticleList extends EventEmitter {
     }
 
     /**
-     * parse file name into FileMeta
+     * parse file name into ArticleFile
      * 
      * @param {string} [fileName=''] 
-     * @returns {Model.FileMeta}
+     * @returns {Model.ArticleFile}
      */
     resolveFileName(fileName = '') {
         const pathObj = path.parse(fileName);
@@ -63,9 +63,9 @@ class ArticleList extends EventEmitter {
     }
 
     /**
-     * Parse file matches `nameRegxp` under `bathPath` to `FileMeta[]`
+     * Parse file matches `nameRegxp` under `bathPath` to `ArticleFile[]`
      * 
-     * @returns {Promise<Model.FileMeta[]>}
+     * @returns {Promise<Model.ArticleFile[]>}
      */
     async readFiles() {
         return new Promise((resolve, reject) => {
@@ -73,7 +73,7 @@ class ArticleList extends EventEmitter {
                 if (err) {
                     reject(err);
                 } else {
-                    /** @type {Model.FileMeta[]} */
+                    /** @type {Model.ArticleFile[]} */
                     const files = fileNames
                         .filter(name => name.match(this.nameRegxp))
                         .map(this.resolveFileName.bind(this));

@@ -113,27 +113,27 @@ class BlogServer extends EventEmitter {
 
         /**
          * add article to article list / tag list
-         * @param {Model.FileMeta} meta 
+         * @param {Model.ArticleFile} file 
          */
-        const handleArticleCreate = async meta => {
-            const article = await this.parser.parse(meta);
+        const handleArticleCreate = async file => {
+            const article = await this.parser.parse(file);
             pushAndSort(article, this.state.articles);
             article.meta.tags.forEach(tag => pushAndSort(article, this.state.tags[tag]));
         };
 
         /**
          * delete article matches given meta from Article[]
-         * @param {Model.FileMeta} meta 
+         * @param {Model.ArticleFile} file 
          * @param {Model.Article[]} array 
          */
-        const findAndDel = (meta, array) => {
-            const index = array.findIndex(a => meta.base === a.file.base);
+        const findAndDel = (file, array) => {
+            const index = array.findIndex(a => file.base === a.file.base);
             array.splice(index, 1);
         };
 
         /**
          * remove aritlce matches given meta from `this.articles` and `this.tags`
-         * @param {Model.FileMeta} meta 
+         * @param {Model.ArticleFile} meta 
          */
         const handleArticleRemove = meta => {
             findAndDel(meta, this.state.articles);
@@ -172,7 +172,7 @@ class BlogServer extends EventEmitter {
          * 
          * @param {number} page page number
          * @param {string} tag article tag
-         * @param {Router.IRouterContext} ctx request context
+         * @param {import('koa-router').IRouterContext} ctx request context
          */
         const getPageLocals = (page, tag, ctx) => {
             const offset = (page - 1) * this.config.articlesPerPage;

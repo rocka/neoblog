@@ -59,7 +59,7 @@ class ArticleParser extends EventEmitter {
     /**
      * convert article src to html asynchronously
      * 
-     * @param {Model.FileMeta} file file ext name
+     * @param {Model.ArticleFile} file file ext name
      * @param {string} src article content string
      */
     parseContent(file, src) {
@@ -77,7 +77,7 @@ class ArticleParser extends EventEmitter {
     /**
      * Parse file to Article Object
      * 
-     * @param {Model.FileMeta} file 
+     * @param {Model.ArticleFile} file 
      * @returns {Model.Article}
      */
     async parse(file) {

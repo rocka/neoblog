@@ -86,7 +86,10 @@ class BlogServer extends EventEmitter {
         this.parser = new ArticleParser();
         this.page = new PageRenderer({
             basePath: this.config.templateDir,
-            baseLocals: { config: { title: this.config.title } }
+            baseLocals: {
+                config: { title: this.config.title },
+                state: this.state
+            }
         });
         this.app = new Koa();
         // reference `ctx.app.server` to `BlogServer` instance

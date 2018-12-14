@@ -23,16 +23,17 @@
   "license": "MIT",
   "dependencies": {
     "escape-html": "^1.0.3",
-    "highlight.js": "^9.13.0",
-    "koa": "^2.5.3",
+    "highlight.js": "^9.13.1",
+    "koa": "^2.6.2",
     "koa-body": "^4.0.4",
     "koa-mount": "^4.0.0",
     "koa-router": "^7.4.0",
-    "koa-static-cache": "^5.1.2",
+    "koa-static": "^5.0.0",
     "lodash.differenceby": "^4.8.0",
     "lodash.intersectionby": "^4.7.0",
     "lodash.uniqby": "^4.7.0",
-    "marked": "^0.5.1",
-    "pug": "^2.0.3"
+    "marked": "^0.5.2",
+    "pug": "^2.0.3",
+    "yaml": "^1.1.0"
   }
 }

@@ -2,10 +2,16 @@ aside
     p #{side.title}
     each group in side.items
         ul
-            each item in group
-                li
-                    if item.link && item.name
-                        a(href=item.link) #{item.name}
-                    else if item.text
-                        span #{item.text}
+            if group.preset == 'tags'
+                each articles, tag in state.tags
+                    if articles.length > 0
+                        li
+                            a(href=`/tag/${tag}`) #{tag} (#{articles.length})
+            else
+                each item in group
+                    li
+                        if item.link && item.name
+                            a(href=item.link) #{item.name}
+                        else if item.text
+                            span #{item.text}
         div(class="line")

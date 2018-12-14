@@ -25,7 +25,7 @@ module.exports = {
                 // charset, name, content, httpEquiv
                 { charset: 'UTF-8' },
                 { name: 'theme-color', content: '#333' },
-                { httpEquiv: 'content-security-policy', content: 'script-src \'self\';' }
+                { httpEquiv: 'content-security-policy', content: "script-src 'self';" }
             ],
             link: [
                 // as, rel, href, crossorigin, media, sizes, type, title
@@ -43,6 +43,7 @@ module.exports = {
                 [
                     { name: 'Index', link: '/' }
                 ],
+                { preset: 'tags' },
                 [
                     { text: `OS: ${process.platform} ${process.arch}` },
                     { text: `Node: ${process.version}` }

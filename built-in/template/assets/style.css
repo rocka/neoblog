@@ -73,6 +73,16 @@ main {
     padding: 0 2rem;
 }
 
+.tag-tip {
+    color: white;
+    margin: 0 0 1rem 0;
+    padding: 1rem;
+    line-height: 1.5;
+}
+.tag-tip-red { background-color: #d60027; }
+.tag-tip-orange { background-color: #ec5315; }
+.tag-tip-green { background-color: #4eba0f; }
+
 main a {
     color: #43853d;
     text-decoration: none;

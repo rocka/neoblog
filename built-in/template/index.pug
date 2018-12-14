@@ -2,6 +2,9 @@ extends layout
 
 block content
     p.heading #{indexHeading}
+    if tag
+        .tag-tip.tag-tip-green
+            span Viewing articles under tag: #{tag}
     each article in articles
         article
             h1

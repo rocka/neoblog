@@ -186,6 +186,7 @@ class BlogServer extends EventEmitter {
                 ...this.config.templateArgs,
                 articles: articles.slice(offset, offset + this.config.articlesPerPage),
                 host,
+                tag,
                 pagination: {
                     current: page,
                     prefix: tag ? `/tag/${tag}` : '',

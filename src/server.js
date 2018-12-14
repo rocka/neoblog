@@ -5,7 +5,7 @@ const EventEmitter = require('events');
 
 const Koa = require('koa');
 const KoaRouter = require('koa-router');
-const KoaStatic = require('koa-static-cache');
+const KoaStatic = require('koa-static');
 const KoaMount = require('koa-mount');
 
 const ArticleList = require('./list');
@@ -233,11 +233,15 @@ class BlogServer extends EventEmitter {
             }
         });
         this.app.use(coreRouter.routes());
-        this.app.use(KoaMount('/assets', KoaStatic({
-            dir: path.join(this.config.templateDir, 'assets'),
-            preload: false,
-            dynamic: true
-        })));
+        this.app.use(
+            KoaMount('/assets',
+                KoaStatic(path.join(this.config.templateDir, 'assets'), {
+                    maxage: 365 * 24 * 3600 * 1000,
+                    gzip: false,
+                    brotli: false
+                })
+            )
+        );
         const builtInPlugins = require(this.builtInPluginPath);
         builtInPlugins.forEach(this.installPlugin.bind(this));
         this.config.plugins.forEach(this.installPlugin.bind(this));

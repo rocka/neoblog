@@ -4,6 +4,8 @@ const fs = require('fs');
 const util = require('util');
 const EventEmitter = require('events');
 
+const YAML = require('yaml');
+
 const read = util.promisify(fs.readFile);
 
 class ArticleParser extends EventEmitter {
@@ -15,11 +17,12 @@ class ArticleParser extends EventEmitter {
      * get excerpt of HTML string
      * 
      * Strategy:
-     * find HTML string `<!-- more -->`, cut before it; if not found:
-     * first find 1st image or figure ('</figure>)
-     * then find the 5th (if not more than 5 paragraph, just the last) paragraph end ('</p>')
-     * figure ends before paragraph -> cut until </figure>
-     * 5th paragraph ends before figure -> cut until </p>
+     * cut before HTML string `<!-- more -->`
+     * if not found:
+     * find 1st image or figure end (`</img>` or `</figure>`)
+     * find the 5th (or the last) paragraph end (`</p>`)
+     * if figure ends before paragraph -> cut until `</figure>`
+     * else -> cut until `</p>`
      * 
      * @static
      * @param {string} html 
@@ -81,21 +84,43 @@ class ArticleParser extends EventEmitter {
      * @returns {Model.Article}
      */
     async parse(file) {
-        const metaRegxp = /```meta\n([^`]+)\n```/g;
         try {
-            const src = (await read(file.path)).toString();
-            const result = metaRegxp.exec(src);
+            const src = (await read(file.path)).toString().trimLeft();
+            /** @type {Model.Article} */
+            const article = {
+                file,
+                meta: null,
+                src,
+                html: null,
+                excerpt: null,
+                excerptText: null,
+                excerptImg: null,
+                more: false
+            };
+            let md = '';
             /** @type {Model.ArticleMeta} */
-            const meta = JSON.parse(result[1]);
+            let meta = null;
+            if (src.startsWith('```meta')) {
+                const jsonStop = src.indexOf('\n```\n', 7);
+                const json = src.substring(7, jsonStop);
+                meta = JSON.parse(json);
+                md = src.slice(jsonStop + 5);
+            } else if (src.startsWith('---')) {
+                const yamlStop = src.indexOf('\n---\n', 3);
+                const yaml = src.substring(3, yamlStop);
+                meta = YAML.parse(yaml);
+                md = src.slice(yamlStop + 5);
+            }
             meta.date = new Date(meta.date);
-            const html = (await this.parseContent(file, src.replace(metaRegxp, ''))).trim();
-            const excerpt = ArticleParser.excerptHTML(html);
-            const excerptText = excerpt.replace(/<[^>]+>/g, '').slice(0, 150);
-            const excerptImg = (html.match(/<img.+?src="([^"]+)"/) || [])[1];
-            const more = excerpt.length < html.length;
-            return { file, meta, src, html, excerpt, excerptText, excerptImg, more };
+            article.meta = meta;
+            article.html = await this.parseContent(file, md);
+            article.excerpt = meta.excerpt || ArticleParser.excerptHTML(article.html);
+            article.excerptText = meta.excerpt || article.excerpt.replace(/<[^>]+>/g, '').slice(0, 150);
+            article.excerptImg = meta.img || (article.html.match(/<img.+?src="([^"]+)"/) || [])[1];
+            article.more = article.excerpt.length < article.html.length;
+            return article;
         } catch (err) {
-            const msg = `<pre>Error when parsing:\n${file.path}\n\n${err.stack}</pre>`;
+            const msg = `<pre class="hljs"><code>Error when parsing:\n${file.path}\n\n${err.stack}</code></pre>`;
             return {
                 meta: {
                     tags: ['error'],
@@ -112,6 +137,7 @@ class ArticleParser extends EventEmitter {
             };
         }
     }
+
     destroy() {
         this.removeAllListeners();
     }

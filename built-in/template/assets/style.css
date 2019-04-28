@@ -70,7 +70,7 @@ aside ul li {
 
 main {
     margin-left: 234px;
-    padding: 0 2rem;
+    padding: 1rem 2rem;
 }
 
 .tag-tip {
@@ -129,13 +129,13 @@ h5:hover::after {
     color: #43853d;
 }
 
+main article h1:first-of-type {
+    margin-top: 0;
+}
+
 main article p.meta {
     color: grey;
     font-size: 0.9rem;
-}
-
-main .pagination {
-    margin-bottom: 2rem;
 }
 
 main blockquote {

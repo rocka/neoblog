@@ -63,6 +63,7 @@ class PageRenderer extends EventEmitter {
         }
         return Pug.renderFile(name, {
             cache: true,
+            filename: name,
             ...this.baseLocals,
             ...locals
         });

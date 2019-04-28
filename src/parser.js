@@ -17,14 +17,14 @@ class ArticleParser extends EventEmitter {
      * get excerpt of HTML string
      * 
      * Strategy:
-     * cut before HTML string `<!-- more -->`
-     * if not found:
-     * find 1st image or figure end (`</img>` or `</figure>`)
-     * find the 5th (or the last) paragraph end (`</p>`)
-     * if figure ends before paragraph -> cut until `</figure>`
-     * else -> cut until `</p>`
+     * 1. cut before HTML string `<!-- more -->`
+     * 2. cut before first `<h*>` element 
+     * 3. if none above:
+     *    - find first image end (`</img>` or `</figure>`)
+     *    - find second (or last) paragraph end (`</p>`)
+     *    - if figure ends before paragraph -> cut until image (`</img>` or `</figure>`)
+     *    - else -> cut until paragraph (`</p>`)
      * 
-     * @static
      * @param {string} html 
      * @returns {string}
      */
@@ -34,16 +34,21 @@ class ArticleParser extends EventEmitter {
         if (moreResult) {
             return html.substr(0, moreResult.index);
         }
+        const headingRegxp = /<h\d>/;
+        const headingResult = headingRegxp.exec(html);
+        if (headingResult) {
+            return html.substr(0, headingResult.index);
+        }
         const imgRegxp = /<img[^>]+>/;
         const imgTag = imgRegxp.exec(html);
-        const firstImgEnd = imgRegxp.lastIndex + imgTag ? imgTag[0].length : 0;
+        const firstImgEnd = imgRegxp.lastIndex + (imgTag ? imgTag[0].length : 0);
         // got index of character '<'
         let firstFigEnd = html.indexOf('</figure>');
         // if found any, forward 9 to character '>'
         if (firstFigEnd > 0) firstFigEnd += 9;
         if (firstFigEnd < firstImgEnd) firstFigEnd = firstImgEnd;
         let paraEnd = -1;
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 2; i++) {
             // find index of character '<'
             const newEnd = html.indexOf('</p>', paraEnd + 1);
             if (newEnd >= 0) {
@@ -81,7 +86,7 @@ class ArticleParser extends EventEmitter {
      * Parse file to Article Object
      * 
      * @param {Model.ArticleFile} file 
-     * @returns {Model.Article}
+     * @returns {Promise<Model.Article>}
      */
     async parse(file) {
         try {
@@ -99,9 +104,10 @@ class ArticleParser extends EventEmitter {
             };
             let md = '';
             /** @type {Model.ArticleMeta} */
-            let meta = null;
-            if (src.startsWith('```meta')) {
-                const jsonStop = src.indexOf('\n```\n', 7);
+            let meta;
+            if (src.startsWith('```')) {
+                const metaResult = src.match(/```\w+\n/);
+                const jsonStop = src.indexOf('\n```\n', metaResult[0].length);
                 const json = src.substring(7, jsonStop);
                 meta = JSON.parse(json);
                 md = src.slice(jsonStop + 5);

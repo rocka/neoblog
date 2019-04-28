@@ -18,37 +18,31 @@ class ArticleParser extends EventEmitter {
      * 
      * Strategy:
      * 1. cut before HTML string `<!-- more -->`
-     * 2. cut before first `<h*>` element 
-     * 3. if none above:
+     * 2. if not found:
+     *    - find first heading end (`</h*>`)
      *    - find first image end (`</img>` or `</figure>`)
-     *    - find second (or last) paragraph end (`</p>`)
-     *    - if figure ends before paragraph -> cut until image (`</img>` or `</figure>`)
-     *    - else -> cut until paragraph (`</p>`)
+     *    - find 5th (or last) paragraph end (`</p>`)
+     *    - cut until the smallest valid index
      * 
      * @param {string} html 
      * @returns {string}
      */
     static excerptHTML(html) {
-        const moreRegxp = /<!--[\s]*?more[\s]*?-->/i;
-        const moreResult = moreRegxp.exec(html);
+        const moreResult = html.match(/<!--\s*?more\s*?-->/i);
         if (moreResult) {
             return html.substr(0, moreResult.index);
         }
-        const headingRegxp = /<h\d>/;
-        const headingResult = headingRegxp.exec(html);
-        if (headingResult) {
-            return html.substr(0, headingResult.index);
-        }
-        const imgRegxp = /<img[^>]+>/;
-        const imgTag = imgRegxp.exec(html);
-        const firstImgEnd = imgRegxp.lastIndex + (imgTag ? imgTag[0].length : 0);
+        const headingResult = html.match(/<h\d>/);
+        const headingEnd = headingResult ? headingResult[0].length + headingResult.index : -1;
+        const imgResult = html.match(/<img[^>]+>/);
+        const imgEnd = imgResult ? imgResult[0].length + imgResult.index : -1;
         // got index of character '<'
-        let firstFigEnd = html.indexOf('</figure>');
+        let figEnd = html.indexOf('</figure>');
         // if found any, forward 9 to character '>'
-        if (firstFigEnd > 0) firstFigEnd += 9;
-        if (firstFigEnd < firstImgEnd) firstFigEnd = firstImgEnd;
+        if (figEnd > 0) figEnd += 9;
+        if (figEnd < imgEnd) figEnd = imgEnd;
         let paraEnd = -1;
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 5; i++) {
             // find index of character '<'
             const newEnd = html.indexOf('</p>', paraEnd + 1);
             if (newEnd >= 0) {
@@ -60,7 +54,8 @@ class ArticleParser extends EventEmitter {
             }
         }
         let index = paraEnd;
-        if (firstFigEnd <= paraEnd && firstFigEnd > 0) index = firstFigEnd;
+        if (figEnd > 0 && index > figEnd) index = figEnd;
+        if (headingEnd > 0 && index > headingEnd) index = headingEnd;
         return html.substr(0, index);
     }
 
@@ -90,7 +85,7 @@ class ArticleParser extends EventEmitter {
      */
     async parse(file) {
         try {
-            const src = (await read(file.path)).toString().trimLeft();
+            const src = (await read(file.path)).toString().trim();
             /** @type {Model.Article} */
             const article = {
                 file,

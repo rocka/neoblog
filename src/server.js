@@ -111,7 +111,7 @@ class BlogServer extends EventEmitter {
          */
         const pushAndSort = (article, array) => {
             array.push(article);
-            array.sort((a, b) => b.meta.date - a.meta.date);
+            array.sort((a, b) => b.meta.date.getTime() - a.meta.date.getTime());
         };
 
         /**
@@ -131,7 +131,9 @@ class BlogServer extends EventEmitter {
          */
         const findAndDel = (file, array) => {
             const index = array.findIndex(a => file.base === a.file.base);
-            array.splice(index, 1);
+            if (index >= 0) {
+                array.splice(index, 1);
+            }
         };
 
         /**

@@ -27,11 +27,9 @@ renderer.code = function (code, lang) {
     return `<pre class="hljs"><code class="lang-${result.language}" data-language="${result.language}">${result.value}</code></pre>`;
 };
 
-Marked.setOptions({ renderer });
-
 function install(server) {
     server.parser.on('md', (src, resolve) => {
-        resolve(Marked(src));
+        resolve(Marked(src, { renderer }).trim());
     });
 }
 

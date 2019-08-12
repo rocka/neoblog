@@ -44,7 +44,7 @@ class PageRenderer extends EventEmitter {
             },
         };
         this.watcher = fs.watch(basePath, (event, filename) => {
-            if (Reflect.ownKeys(Pug.cache).length) {
+            if (Object.keys(Pug.cache).length > 0) {
                 console.log(`[PageRenderer] ${event}: ${filename}, clear cache`);
                 Pug.cache = {};
             }

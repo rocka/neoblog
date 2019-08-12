@@ -43,7 +43,7 @@ class BlogServer extends EventEmitter {
             config.plugins = input.plugins;
             console.log(`${config.plugins.length} plugin(s) found.`);
         }
-        if (!input.templateArgs || Reflect.ownKeys(input.templateArgs).length === 0) {
+        if (!input.templateArgs || Object.keys(input.templateArgs).length === 0) {
             console.log('No arguments applied to template.');
         } else {
             config.templateArgs = input.templateArgs;

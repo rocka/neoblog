@@ -19,7 +19,7 @@ class ArticleParser extends EventEmitter {
      * Strategy:
      * 1. cut before HTML string `<!-- more -->`
      * 2. if not found:
-     *    - find first heading end (`</h*>`)
+     *    - find first heading start (`</h*>`)
      *    - find first image end (`</img>` or `</figure>`)
      *    - find 5th (or last) paragraph end (`</p>`)
      *    - cut until the smallest valid index

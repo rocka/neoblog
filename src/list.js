@@ -5,9 +5,9 @@ const path = require('path');
 const EventEmitter = require('events');
 
 const _ = {
-    uniqBy: require('lodash.uniqby'),
-    differenceBy: require('lodash.differenceby'),
-    intersectionBy: require('lodash.intersectionby')
+    uniqBy: require('lodash/uniqBy'),
+    differenceBy: require('lodash/differenceBy'),
+    intersectionBy: require('lodash/intersectionBy')
 };
 
 class ArticleList extends EventEmitter {

@@ -10,16 +10,29 @@ renderer.image = function (href, title, text) {
     return `<figure><img src="${href}"><figcaption>${text}</figcaption></figure>`;
 };
 
+// https://github.com/markedjs/marked/issues/773#issuecomment-238095374
+renderer.paragraph = function (text) {
+    if (text.startsWith('<figure') && text.endsWith('</figure>')) {
+        return text;
+    }
+    return '<p>' + text + '</p>';
+};
+
 renderer.heading = function (text, level) {
     const escaped = EscapeHTML(text).replace(/ /g, '_');
     // <h1><a id="heading" href="#heading" class="anchor">heading</a></h1>
     return `<h${level}><a id="${escaped}" href="#${escaped}" class="anchor">${text}</a></h${level}>`;
 };
 
+const NoHighlight = ['txt', 'text', 'plain'];
+
 renderer.code = function (code, lang) {
+    if (!lang || NoHighlight.includes(lang)) {
+        return `<pre class="hljs"><code>${code}</code></pre>`;
+    }
     /** @type {hljs.IHighlightResultBase} */
     let result = {};
-    if (lang && HLJS.getLanguage(lang)) {
+    if (HLJS.getLanguage(lang)) {
         result = HLJS.highlight(lang, code);
     } else {
         result = HLJS.highlightAuto(code);

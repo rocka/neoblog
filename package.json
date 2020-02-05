@@ -23,15 +23,15 @@
   "license": "MIT",
   "dependencies": {
     "escape-html": "^1.0.3",
-    "highlight.js": "^9.15.9",
-    "koa": "^2.7.0",
-    "koa-body": "^4.1.0",
+    "highlight.js": "^9.18.1",
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
     "koa-mount": "^4.0.0",
-    "koa-router": "^7.4.0",
+    "koa-router": "^8.0.6",
     "koa-static": "^5.0.0",
     "lodash": "^4.17.15",
     "marked": "^0.7.0",
     "pug": "^2.0.4",
-    "yaml": "^1.6.0"
+    "yaml": "^1.7.2"
   }
 }

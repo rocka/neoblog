@@ -113,6 +113,14 @@ class ArticleParser extends EventEmitter {
                 md = src.slice(yamlStop + 5);
             }
             meta.date = new Date(meta.date);
+            if (!Array.isArray(meta.tags) && typeof meta.tag !== 'undefined') {
+                if (Array.isArray(meta.tag)) {
+                    meta.tags = meta.tag;
+                } else if (typeof meta.tag === 'string') {
+                    meta.tags = [meta.tag];
+                }
+                delete meta.tag;
+            }
             article.meta = meta;
             article.html = await this.parseContent(file, md);
             article.excerpt = meta.excerpt || ArticleParser.excerptHTML(article.html);

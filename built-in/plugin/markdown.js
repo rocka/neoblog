@@ -30,7 +30,7 @@ renderer.code = function (code, lang) {
     if (!lang || NoHighlight.includes(lang)) {
         return `<pre class="hljs"><code>${code}</code></pre>`;
     }
-    /** @type {hljs.IHighlightResultBase} */
+    /** @type {HighlightResult} */
     let result = {};
     if (HLJS.getLanguage(lang)) {
         result = HLJS.highlight(lang, code);
@@ -38,6 +38,10 @@ renderer.code = function (code, lang) {
         result = HLJS.highlightAuto(code);
     }
     return `<pre class="hljs"><code class="lang-${result.language}" data-language="${result.language}">${result.value}</code></pre>`;
+};
+
+renderer.table = function (header, body) {
+    return `<div class="table-wrapper"><table><thead>${header}</thead><tbody>${body}</tobody></table></table>`;
 };
 
 function install(server) {

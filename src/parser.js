@@ -19,7 +19,7 @@ class ArticleParser extends EventEmitter {
      * Strategy:
      * 1. cut before HTML string `<!-- more -->`
      * 2. if not found:
-     *    - find first heading start (`</h*>`)
+     *    - find first heading start (`<h*>`)
      *    - find first image end (`</img>` or `</figure>`)
      *    - find 5th (or last) paragraph end (`</p>`)
      *    - cut until the smallest valid index
@@ -33,7 +33,7 @@ class ArticleParser extends EventEmitter {
             return html.substr(0, moreResult.index);
         }
         const headingResult = html.match(/<h\d>/);
-        const headingEnd = headingResult ? headingResult[0].length + headingResult.index : -1;
+        const headingEnd = headingResult ? headingResult.index : -1;
         const imgResult = html.match(/<img[^>]+>/);
         const imgEnd = imgResult ? imgResult[0].length + imgResult.index : -1;
         // got index of character '<'

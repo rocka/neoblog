@@ -33,14 +33,17 @@ class PageRenderer extends EventEmitter {
             },
             formatDate(dt) {
                 if (!(dt instanceof Date)) dt = new Date(dt);
-                return dt.toLocaleDateString('zh', {
+                const date =  dt.toLocaleDateString('zh', {
                     year: 'numeric',
                     month: '2-digit',
-                    day: '2-digit',
+                    day: '2-digit'
+                });
+                const time = dt.toLocaleTimeString('zh', {
                     hour: '2-digit',
-                    hour12: false,
+                    hourCycle: 'h23',
                     minute: '2-digit'
                 });
+                return `${date} ${time}`;
             },
         };
         this.watcher = fs.watch(basePath, (event, filename) => {

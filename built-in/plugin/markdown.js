@@ -41,7 +41,7 @@ renderer.code = function (code, lang) {
 };
 
 renderer.table = function (header, body) {
-    return `<div class="table-wrapper"><table><thead>${header}</thead><tbody>${body}</tobody></table></table>`;
+    return `<div class="table-wrapper"><table><thead>${header}</thead><tbody>${body}</tobody></table></table></div>`;
 };
 
 function install(server) {

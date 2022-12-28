@@ -1,7 +1,7 @@
 'use strict';
 
-const Marked = require('marked');
-const HLJS = require('highlight.js');
+const { marked: Marked } = require('marked');
+const { default: HLJS } = require('highlight.js');
 const EscapeHTML = require('escape-html');
 
 const renderer = new Marked.Renderer();
@@ -33,7 +33,7 @@ renderer.code = function (code, lang) {
     /** @type {HighlightResult} */
     let result = {};
     if (HLJS.getLanguage(lang)) {
-        result = HLJS.highlight(lang, code);
+        result = HLJS.highlight(code, { language: lang });
     } else {
         result = HLJS.highlightAuto(code);
     }

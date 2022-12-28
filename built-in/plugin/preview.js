@@ -1,6 +1,6 @@
 'use strict';
 
-const Body = require('koa-body');
+const { koaBody: Body } = require('koa-body');
 const Router = require('koa-router');
 
 const router = new Router();
